@@ -3,6 +3,7 @@ package com.microservice_patient.patient.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -19,7 +20,8 @@ public class Patient {
     @NotBlank(message = "lastName must not be null")
     private String lastName;
 
-    @NotBlank(message = "dateOfBirth must not be null")
+    @Past(message = "La date de naissance doit être dans le passé")
+    @NotNull(message = "La date de naissance est obligatoire")
     private LocalDate dateOfBirth;
 
     @NotNull(message = "Gender must not be null")
