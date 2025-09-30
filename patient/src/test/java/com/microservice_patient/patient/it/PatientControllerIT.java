@@ -74,6 +74,7 @@ class PatientControllerIT {
         ResponseEntity<Patient> response = restTemplate.postForEntity("/patients", newPatient, Patient.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertNotNull(response.getBody());
         assertThat(response.getBody().getId()).isNotNull();
         assertThat(patientRepository.findAll()).hasSize(2);
     }
