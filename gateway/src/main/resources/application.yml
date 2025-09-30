@@ -8,7 +8,7 @@ spring:
   cloud:
     gateway:
       server:
-        webflux:
+        webmvc:
           routes:
             - id: patient-service
               uri: http://patient:8081
