@@ -16,4 +16,11 @@ public class GlobalExceptionHandler {
     public Map<String, String> patientConflict(PatientConflictException ex){
         return Map.of("error", ex.getMessage());
     }
+
+
+    @ExceptionHandler(RuntimeException.class)
+    public Map<String, String> genericHandler(RuntimeException ex){
+        return Map.of("error", ex.getMessage());
+    }
+
 }
