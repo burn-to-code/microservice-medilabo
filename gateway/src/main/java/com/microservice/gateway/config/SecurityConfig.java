@@ -24,7 +24,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/patients", true)
+                        .defaultSuccessUrl("/medilabo/patient", true)
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll);

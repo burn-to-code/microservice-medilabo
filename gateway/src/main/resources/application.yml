@@ -20,9 +20,9 @@ spring:
             - id: front-service
               uri: http://front:8080
               predicates:
-                - Path=/**
+                - Path=/medilabo/**
               filters:
-                - StripPrefix=0
+                - StripPrefix=1
 
 logging:
   level:

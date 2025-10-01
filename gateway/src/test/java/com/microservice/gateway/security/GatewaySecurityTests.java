@@ -31,7 +31,7 @@ class GatewaySecurityTests {
         mockMvc.perform(formLogin().user("admin").password("password"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(authenticated())
-                .andExpect(redirectedUrl("/patients"));
+                .andExpect(redirectedUrl("/medilabo/patient"));
     }
 
     @Test
