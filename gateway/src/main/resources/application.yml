@@ -17,6 +17,13 @@ spring:
               filters:
                 - StripPrefix=0
 
+            - id: front-service
+              uri: http://front:8080
+              predicates:
+                - Path=/**
+              filters:
+                - StripPrefix=0
+
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
