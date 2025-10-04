@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/medilabo/patient", true)
                         .permitAll()
                 )
+                .csrf(AbstractHttpConfigurer::disable)
                 .logout(LogoutConfigurer::permitAll);
 
         return http.build();
