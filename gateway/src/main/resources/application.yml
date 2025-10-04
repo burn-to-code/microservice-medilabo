@@ -18,7 +18,7 @@ spring:
                 - StripPrefix=0
 
             - id: front-service
-              uri: http://front:8080
+              uri: http://front:8082
               predicates:
                 - Path=/medilabo/**
               filters:
