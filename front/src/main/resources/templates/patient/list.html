@@ -8,6 +8,11 @@
 <body>
 <div th:replace="fragments/header :: header"></div>
 
+<h1>Liste des patients</h1>
+
+<a class="btn btn-primary" th:href="@{/medilabo/patient/add}">➕ Ajouter un patient</a>
+
+
 <table class="table table-striped">
     <thead>
     <tr>
