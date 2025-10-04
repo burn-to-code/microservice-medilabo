@@ -3,15 +3,15 @@ package com.microservice.front.controller;
 import com.microservice.front.service.PatientService;
 import com.project.common.dto.PatientDTO;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/patient")
 public class PatientController {
@@ -42,6 +42,26 @@ public class PatientController {
             return "patient/add";
         }
         patientService.savePatient(patient);
+        return "redirect:/medilabo/patient";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editPatientForm(@PathVariable Long id, Model model){
+        PatientDTO patient = patientService.getPatientById(id);
+        model.addAttribute("patient", patient);
+        return "patient/edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updatePatient(@PathVariable Long id, @Valid PatientDTO patient, BindingResult result, Model model){
+        if(result.hasErrors()){
+            model.addAttribute("patient", patient);
+            return "patient/edit";
+        }
+
+        log.debug("Sending patient update: {}", patient);
+
+        patientService.updatePatient(id, patient);
         return "redirect:/medilabo/patient";
     }
 }
