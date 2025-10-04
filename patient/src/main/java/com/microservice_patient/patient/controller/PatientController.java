@@ -1,7 +1,7 @@
 package com.microservice_patient.patient.controller;
 
-import com.microservice_patient.patient.model.Patient;
 import com.microservice_patient.patient.service.PatientService;
+import com.project.common.dto.PatientDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +21,24 @@ public class PatientController {
     }
 
     @GetMapping
-    public List<Patient> getAllPatients(){
+    public List<PatientDTO> getAllPatients(){
         return patientService.getAllPatients();
     }
 
     @GetMapping("/{id}")
-    public Patient getPatientById(@PathVariable Long id){
+    public PatientDTO getPatientById(@PathVariable Long id){
         return patientService.getPatientById(id);
     }
 
     @PostMapping()
-    public ResponseEntity<Patient> savePatient(@RequestBody @Valid Patient patient){
-        Patient created = patientService.savePatient(patient);
+    public ResponseEntity<PatientDTO> savePatient(@RequestBody @Valid PatientDTO patient){
+        PatientDTO created = patientService.savePatient(patient);
         URI location = URI.create("/patients/" + created.getId());
         return ResponseEntity.created(location).body(created);
     }
 
     @PutMapping("/{id}")
-    public Patient updatePatient(@PathVariable Long id, @RequestBody @Valid Patient patientDetails){
+    public PatientDTO updatePatient(@PathVariable Long id, @RequestBody @Valid PatientDTO patientDetails){
         return patientService.updatePatient(id, patientDetails);
     }
 

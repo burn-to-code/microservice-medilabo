@@ -1,9 +1,7 @@
 package com.microservice_patient.patient.it;
 
-import com.microservice_patient.patient.model.Gender;
-import com.microservice_patient.patient.model.Patient;
 import com.microservice_patient.patient.dao.PatientRepository;
-import org.junit.jupiter.api.Assertions;
+import com.project.common.dto.PatientDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,26 +26,37 @@ class PatientControllerIT {
     @Autowired
     private PatientRepository patientRepository;
 
-    private Patient patient;
-
+    private PatientDTO patientDTO;
     @BeforeEach
     void setUp() {
         patientRepository.deleteAll();
 
-        patient = new Patient();
-        patient.setFirstName("John");
-        patient.setLastName("Doe");
-        patient.setDateOfBirth(LocalDate.of(1990, 1, 1));
-        patient.setGender(Gender.M);
-        patient.setAddress("123 Street");
-        patient.setPhoneNumber("0102030405");
+        patientDTO = new PatientDTO();
+        patientDTO.setFirstName("John");
+        patientDTO.setLastName("Doe");
+        patientDTO.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        patientDTO.setGender(com.project.common.model.Gender.M);
+        patientDTO.setAddress("123 Street");
+        patientDTO.setPhoneNumber("0102030405");
 
+        // Sauvegarde via repository direct (entité Patient)
+        var patient = new com.microservice_patient.patient.model.Patient();
+        patient.setFirstName(patientDTO.getFirstName());
+        patient.setLastName(patientDTO.getLastName());
+        patient.setDateOfBirth(patientDTO.getDateOfBirth());
+        patient.setGender(com.microservice_patient.patient.model.Gender.M);
+        patient.setAddress(patientDTO.getAddress());
+        patient.setPhoneNumber(patientDTO.getPhoneNumber());
         patientRepository.save(patient);
+
+        // récupérer l'ID généré pour tests PUT/DELETE
+        patientDTO.setId(patient.getId());
     }
 
     @Test
     void getAllPatients_returnsList() {
-        ResponseEntity<Patient[]> response = restTemplate.getForEntity("/patients", Patient[].class);
+        ResponseEntity<PatientDTO[]> response =
+                restTemplate.getForEntity("/patients", PatientDTO[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(1);
@@ -56,46 +65,56 @@ class PatientControllerIT {
 
     @Test
     void getPatientById_returnsPatient() {
-        ResponseEntity<Patient> response = restTemplate.getForEntity("/patients/" + patient.getId(), Patient.class);
+        ResponseEntity<PatientDTO> response =
+                restTemplate.getForEntity("/patients/" + patientDTO.getId(), PatientDTO.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getLastName()).isEqualTo("Doe");
     }
 
     @Test
     void savePatient_createsPatient() {
-        Patient newPatient = new Patient();
-        newPatient.setFirstName("Jane");
-        newPatient.setLastName("Smith");
-        newPatient.setDateOfBirth(LocalDate.of(1985, 5, 5));
-        newPatient.setGender(Gender.F);
+        PatientDTO newPatientDTO = new PatientDTO();
+        newPatientDTO.setFirstName("Jane");
+        newPatientDTO.setLastName("Smith");
+        newPatientDTO.setDateOfBirth(LocalDate.of(1985, 5, 5));
+        newPatientDTO.setGender(com.project.common.model.Gender.F);
 
-        ResponseEntity<Patient> response = restTemplate.postForEntity("/patients", newPatient, Patient.class);
+        ResponseEntity<PatientDTO> response =
+                restTemplate.postForEntity("/patients", newPatientDTO, PatientDTO.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isNotNull();
         assertThat(patientRepository.findAll()).hasSize(2);
     }
 
     @Test
     void updatePatient_modifiesPatient() {
-        patient.setLastName("Updated");
-        HttpEntity<Patient> request = new HttpEntity<>(patient);
+        PatientDTO updateDTO = new PatientDTO();
+        updateDTO.setId(patientDTO.getId());
+        updateDTO.setFirstName(patientDTO.getFirstName());
+        updateDTO.setLastName("Updated");
+        updateDTO.setDateOfBirth(patientDTO.getDateOfBirth());
+        updateDTO.setGender(patientDTO.getGender());
+        updateDTO.setAddress(patientDTO.getAddress());
+        updateDTO.setPhoneNumber(patientDTO.getPhoneNumber());
 
-        ResponseEntity<Patient> response = restTemplate.exchange(
-                "/patients/" + patient.getId(), HttpMethod.PUT, request, Patient.class
+        HttpEntity<PatientDTO> request = new HttpEntity<>(updateDTO);
+
+        ResponseEntity<PatientDTO> response = restTemplate.exchange(
+                "/patients/" + patientDTO.getId(), HttpMethod.PUT, request, PatientDTO.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getLastName()).isEqualTo("Updated");
     }
 
     @Test
     void deletePatient_removesPatient() {
-        restTemplate.delete("/patients/" + patient.getId());
+        restTemplate.delete("/patients/" + patientDTO.getId());
 
         assertThat(patientRepository.findAll()).isEmpty();
     }

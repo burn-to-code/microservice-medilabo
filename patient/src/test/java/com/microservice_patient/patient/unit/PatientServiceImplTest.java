@@ -3,9 +3,11 @@ package com.microservice_patient.patient.unit;
 import com.microservice_patient.patient.dao.PatientRepository;
 import com.microservice_patient.patient.exception.PatientConflictException;
 import com.microservice_patient.patient.exception.PatientNotFound;
+import com.microservice_patient.patient.mapper.PatientMapper;
 import com.microservice_patient.patient.model.Gender;
 import com.microservice_patient.patient.model.Patient;
 import com.microservice_patient.patient.service.PatientServiceImpl;
+import com.project.common.dto.PatientDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,10 +27,14 @@ class PatientServiceImplTest {
     @Mock
     private PatientRepository patientRepository;
 
+    @Mock
+    private PatientMapper patientMapper;
+
     @InjectMocks
     private PatientServiceImpl patientService;
 
     private Patient patient;
+    private PatientDTO patientDTO;
 
     @BeforeEach
     void setUp() {
@@ -42,13 +48,23 @@ class PatientServiceImplTest {
         patient.setGender(Gender.M);
         patient.setAddress("123 Street");
         patient.setPhoneNumber("0102030405");
+
+        patientDTO = new PatientDTO();
+        patientDTO.setId(1L);
+        patientDTO.setFirstName("John");
+        patientDTO.setLastName("Doe");
+        patientDTO.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        patientDTO.setGender(com.project.common.model.Gender.M);
+        patientDTO.setAddress("123 Street");
+        patientDTO.setPhoneNumber("0102030405");
     }
 
     @Test
     void getAllPatients_returnsList() {
         when(patientRepository.findAll()).thenReturn(List.of(patient));
+        when(patientMapper.toDTO(patient)).thenReturn(patientDTO);
 
-        List<Patient> patients = patientService.getAllPatients();
+        List<PatientDTO> patients = patientService.getAllPatients();
 
         assertThat(patients).hasSize(1);
         assertThat(patients.getFirst().getFirstName()).isEqualTo("John");
@@ -58,8 +74,9 @@ class PatientServiceImplTest {
     @Test
     void getPatientById_existing_returnsPatient() {
         when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
+        when(patientMapper.toDTO(patient)).thenReturn(patientDTO);
 
-        Patient found = patientService.getPatientById(1L);
+        PatientDTO found = patientService.getPatientById(1L);
 
         assertThat(found.getLastName()).isEqualTo("Doe");
         verify(patientRepository, times(1)).findById(1L);
@@ -75,7 +92,7 @@ class PatientServiceImplTest {
 
     @Test
     void savePatient_withId_throwsConflict() {
-        Patient withId = new Patient();
+        PatientDTO withId = new PatientDTO();
         withId.setId(99L);
 
         assertThrows(PatientConflictException.class, () -> patientService.savePatient(withId));
@@ -84,28 +101,47 @@ class PatientServiceImplTest {
 
     @Test
     void savePatient_withoutId_savesPatient() {
-        Patient newPatient = new Patient();
-        newPatient.setFirstName("Jane");
-        newPatient.setLastName("Smith");
+        PatientDTO newPatientDTO = new PatientDTO();
+        newPatientDTO.setFirstName("Jane");
+        newPatientDTO.setLastName("Smith");
 
-        when(patientRepository.save(newPatient)).thenReturn(newPatient);
+        Patient patientEntity = new Patient();
+        patientEntity.setFirstName("Jane");
+        patientEntity.setLastName("Smith");
 
-        Patient saved = patientService.savePatient(newPatient);
+        Patient savedEntity = new Patient();
+        savedEntity.setId(2L);
+        savedEntity.setFirstName("Jane");
+        savedEntity.setLastName("Smith");
 
-        assertThat(saved.getFirstName()).isEqualTo("Jane");
-        verify(patientRepository, times(1)).save(newPatient);
+        PatientDTO savedDTO = new PatientDTO();
+        savedDTO.setId(2L);
+        savedDTO.setFirstName("Jane");
+        savedDTO.setLastName("Smith");
+
+        when(patientMapper.toEntity(newPatientDTO)).thenReturn(patientEntity);
+        when(patientRepository.save(patientEntity)).thenReturn(savedEntity);
+        when(patientMapper.toDTO(savedEntity)).thenReturn(savedDTO);
+
+        PatientDTO result = patientService.savePatient(newPatientDTO);
+
+        assertThat(result.getFirstName()).isEqualTo("Jane");
+        assertThat(result.getId()).isEqualTo(2L);
+        verify(patientRepository, times(1)).save(patientEntity);
     }
 
     @Test
     void updatePatient_existing_updatesPatient() {
+        PatientDTO updateDTO = new PatientDTO();
+        updateDTO.setFirstName("Updated");
+        updateDTO.setLastName("Name");
+
         when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
+        when(patientMapper.toDTO(any(Patient.class))).thenReturn(updateDTO);
         when(patientRepository.save(any(Patient.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Patient updatedDetails = new Patient();
-        updatedDetails.setFirstName("Updated");
-        updatedDetails.setLastName("Name");
 
-        Patient updated = patientService.updatePatient(1L, updatedDetails);
+        PatientDTO updated = patientService.updatePatient(1L, updateDTO);
 
         assertThat(updated.getFirstName()).isEqualTo("Updated");
         assertThat(updated.getLastName()).isEqualTo("Name");
@@ -116,7 +152,7 @@ class PatientServiceImplTest {
     void updatePatient_nonExisting_throwsNotFound() {
         when(patientRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(PatientNotFound.class, () -> patientService.updatePatient(99L, patient));
+        assertThrows(PatientNotFound.class, () -> patientService.updatePatient(99L, patientDTO));
         verify(patientRepository, never()).save(any());
     }
 
