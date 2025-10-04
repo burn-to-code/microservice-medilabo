@@ -21,7 +21,7 @@ class GatewaySecurityTests {
 
     @Test
     void accessingPatientsWithoutLoginShouldRedirectToLogin() throws Exception {
-        mockMvc.perform(get("/patients"))
+        mockMvc.perform(get("/medilabo/patient"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("**/login"));
     }
