@@ -1,5 +1,6 @@
 package com.project.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.common.model.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -24,6 +26,8 @@ public class PatientDTO {
 
     @Past(message = "Date of birth must be in the past")
     @NotNull(message = "Date of birth must not be null")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
 
     @NotNull(message = "Gender must not be null")
