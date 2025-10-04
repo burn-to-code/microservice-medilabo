@@ -19,4 +19,24 @@ public class PatientServiceImpl implements PatientService{
     public List<PatientDTO> getAllPatients() {
         return patientClientInterface.getAllPatients();
     }
+
+    @Override
+    public PatientDTO getPatientById(Long id) {
+        return patientClientInterface.getPatientById(id);
+    }
+
+    @Override
+    public PatientDTO savePatient(PatientDTO patient) {
+        return patientClientInterface.savePatient(patient);
+    }
+
+    @Override
+    public PatientDTO updatePatient(Long id, PatientDTO patientDetails) {
+        return patientClientInterface.updatePatient(id, patientDetails);
+    }
+
+    @Override
+    public void deletePatientById(Long id) {
+        patientClientInterface.deletePatientById(id);
+    }
 }

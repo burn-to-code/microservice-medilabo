@@ -7,4 +7,9 @@ import java.util.List;
 public interface PatientService {
 
     List<PatientDTO> getAllPatients();
+
+    PatientDTO getPatientById(Long id);
+    PatientDTO savePatient(PatientDTO patient);
+    PatientDTO updatePatient(Long id, PatientDTO patientDetails);
+    void deletePatientById(Long id);
 }
