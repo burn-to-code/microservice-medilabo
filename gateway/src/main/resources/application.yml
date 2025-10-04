@@ -23,6 +23,9 @@ spring:
                 - Path=/medilabo/**
               filters:
                 - StripPrefix=1
+                - AddRequestHeader=X-Forwarded-Host, localhost:8080
+                - AddRequestHeader=X-Forwarded-Port, 8080
+                - AddRequestHeader=X-Forwarded-Proto, http
 
 logging:
   level:
