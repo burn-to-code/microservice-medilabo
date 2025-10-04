@@ -23,7 +23,7 @@ public interface PatientClientInterface {
     @PostMapping("/patients")
     PatientDTO savePatient(@RequestBody PatientDTO patient);
 
-    @PostMapping("/patients/{id}")
+    @PutMapping("/patients/{id}")
     PatientDTO updatePatient(@PathVariable Long id, @RequestBody PatientDTO patientDetails);
 
     @DeleteMapping("/patients/{id}")
