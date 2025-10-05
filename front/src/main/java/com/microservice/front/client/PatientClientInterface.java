@@ -1,6 +1,5 @@
-package com.microservice.front.config.clientpatient;
+package com.microservice.front.client;
 
-import com.microservice.front.config.BasicAuthClientConfig;
 import com.project.common.dto.PatientDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,8 +9,7 @@ import java.util.List;
 
 @FeignClient(
         name = "patient-service",
-        url = "${spring.application.rest.client.url}",
-        configuration = BasicAuthClientConfig.class
+        url = "${spring.application.rest.client.url}"
 )
 public interface PatientClientInterface {
 
