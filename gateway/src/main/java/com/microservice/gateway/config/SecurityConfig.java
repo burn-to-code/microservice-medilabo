@@ -24,10 +24,10 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/patients/**") // uniquement les appels API
+                .securityMatcher("/patients/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable); // souvent désactivé pour API
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }

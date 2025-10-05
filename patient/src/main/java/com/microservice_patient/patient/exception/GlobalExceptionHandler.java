@@ -28,6 +28,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> genericHandler(RuntimeException ex){
         return Map.of("error", ex.getMessage());
     }
