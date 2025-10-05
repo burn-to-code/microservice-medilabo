@@ -17,6 +17,7 @@ public interface PatientMapper {
     Patient toEntity(PatientDTO patientDTO);
 
     // Met à jour une entité existante avec les données du DTO
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "gender", source = "gender", qualifiedByName = "toEntityGender")
     void updateEntityFromDTO(PatientDTO dto, @MappingTarget Patient entity);
 
