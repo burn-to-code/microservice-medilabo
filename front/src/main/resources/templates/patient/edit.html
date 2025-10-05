@@ -14,8 +14,7 @@
 
 
         <form th:action="@{/medilabo/patient/edit/{id}(id=${patient.id})}"
-              th:object="${patient}" method="post" class="needs-validation" novalidate>
-
+              th:object="${patient}" method="post" class="needs-validation" >
 
             <!-- Prénom -->
             <div class="mb-3">

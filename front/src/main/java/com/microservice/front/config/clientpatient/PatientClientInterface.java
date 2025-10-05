@@ -2,6 +2,7 @@ package com.microservice.front.config.clientpatient;
 
 import com.microservice.front.config.BasicAuthClientConfig;
 import com.project.common.dto.PatientDTO;
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +22,10 @@ public interface PatientClientInterface {
     PatientDTO getPatientById(@PathVariable Long id);
 
     @PostMapping("/patients")
-    PatientDTO savePatient(@RequestBody PatientDTO patient);
+    PatientDTO savePatient(@Valid @RequestBody PatientDTO patient);
 
     @PutMapping("/patients/{id}")
-    PatientDTO updatePatient(@PathVariable Long id, @RequestBody PatientDTO patientDetails);
+    PatientDTO updatePatient(@PathVariable Long id, @Valid @RequestBody PatientDTO patientDetails);
 
     @DeleteMapping("/patients/{id}")
     void deletePatientById(@PathVariable Long id);

@@ -11,7 +11,7 @@
     <div class="container mt-4">
         <h1 class="mb-4">Ajouter un patient</h1>
 
-        <form th:action="@{/medilabo/patient/save}" th:object="${patient}" method="post" class="needs-validation" novalidate>
+        <form th:action="@{/medilabo/patient/save}" th:object="${patient}" method="post" class="needs-validation" >
             <!-- Prénom -->
             <div class="mb-3">
                 <label for="firstName" class="form-label">Prénom</label>

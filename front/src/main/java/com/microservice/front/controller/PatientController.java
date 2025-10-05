@@ -36,9 +36,8 @@ public class PatientController {
     }
 
     @PostMapping("/save")
-    public String savePatient(@Valid PatientDTO patient, BindingResult result, Model model){
+    public String savePatient(@Valid @ModelAttribute("patient") PatientDTO patient, BindingResult result){
         if(result.hasErrors()){
-            model.addAttribute("patient", patient);
             return "patient/add";
         }
         patientService.savePatient(patient);
@@ -53,9 +52,8 @@ public class PatientController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updatePatient(@PathVariable Long id, @Valid PatientDTO patient, BindingResult result, Model model){
+    public String updatePatient(@PathVariable Long id, @Valid @ModelAttribute("patient") PatientDTO patient, BindingResult result){
         if(result.hasErrors()){
-            model.addAttribute("patient", patient);
             return "patient/edit";
         }
 
