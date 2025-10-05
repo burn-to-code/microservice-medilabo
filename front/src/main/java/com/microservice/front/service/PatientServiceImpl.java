@@ -1,6 +1,6 @@
 package com.microservice.front.service;
 
-import com.microservice.front.config.clientpatient.PatientClientInterface;
+import com.microservice.front.client.PatientClientInterface;
 import com.project.common.dto.PatientDTO;
 import org.springframework.stereotype.Service;
 
