@@ -10,6 +10,9 @@
 
 <h1>Liste des patients</h1>
 
+<div th:if="${param.error}" class="alert alert-danger" th:text="${param.error}"></div>
+
+
 <a class="btn btn-primary" th:href="@{/medilabo/patient/add}">➕ Ajouter un patient</a>
 
 
