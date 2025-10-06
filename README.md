@@ -13,13 +13,13 @@ Application Micro Service
 # 🧬 Microservice Medilabo
 
 ## 📑 Sommaire
-- [Présentation générale](#-1-présentation-générale)
+- [Présentation générale](#1-présentation-générale)
     - [Objectif du projet](#-objectif-du-projet)
     - [Technologies principales](#-technologies-principales)
-- [Architecture microservices](#-2-architecture-microservices)
+- [Architecture microservices](#2-architecture-microservices)
     - [Communication interservices](#-communication-interservices)
     - [Gateway](#-gateway)
-- [Structure du projet](#-3-structure-du-projet)
+- [Structure du projet](#3-structure-du-projet)
 - [Détail par microservice](#-4-détail-par-microservice)
     - [Patient](#41--patient)
     - [Front](#42--front)
@@ -39,7 +39,7 @@ Medilabo est une application distribuée basée sur une architecture microservic
 Elle se compose de plusieurs services indépendants communiquant via Spring Cloud Gateway et Feign Client.
 
 ### 🎯 Objectif du projet
-- Centraliser les informations patients (données personnelles, antécédents, etc.) et calculer leurs risques de diabètes en fonction de certains critères (âge, notes, etc.)
+- Centraliser les informations des patients (données personnelles, antécédents, etc.) et calculer leurs risques de diabètes en fonction de certains critères (âge, notes, etc.)
 - Offrir une interface front simple pour la consultation et l’ajout de patients, de notes et de risques.
 - Assurer une communication sécurisée et découplée entre les modules
 
@@ -59,12 +59,12 @@ Elle se compose de plusieurs services indépendants communiquant via Spring Clou
 ## ⚙️ 2. Architecture microservices
 Le projet repose sur 4 microservices + un module commun :
 
-| Service  | Port | Description |
-|----------|------|-------------|
-| patient  | 8081 | Service métier responsable de la gestion des patients |
-| gateway  | 8080 | Point d’entrée unique de l’application, gère la sécurité et le routage |
-| front    | 8082 | Interface utilisateur (Thymeleaf) |
-| common   | —    | Contient les DTO, enums et classes partagées |
+| Service | Port | Description                                                            |
+|---------|------|------------------------------------------------------------------------|
+| patient | 8081 | Service métier responsable de la gestion des patients                  |
+| gateway | 8080 | Point d’entrée unique de l’application, gère la sécurité et le routage |
+| front   | 8082 | Interface utilisateur (Thymeleaf)                                      |
+| common  | —    | Contient les DTO, enums et classes partagées                           |
 
 ### 🔀 Communication interservices
 - Le front communique uniquement avec la gateway
@@ -189,13 +189,13 @@ Chaque requête front passe obligatoirement par la Gateway, qui valide l’accè
 - Exécution isolée sans dépendance réelle à la base
 
 ### 🧰 7. Détails techniques
-| Composant | Version |
-|-----------|--------|
-| Java      | 21     |
-| Spring Boot | 3.5.6 |
-| Maven     | 3.9+   |
-| MySQL     | 8      |
-| Outils    | Lombok, Validation Jakarta, Feign, Docker |
+| Composant   | Version                                   |
+|-------------|-------------------------------------------|
+| Java        | 21                                        |
+| Spring Boot | 3.5.6                                     |
+| Maven       | 3.9+                                      |
+| MySQL       | 8                                         |
+| Outils      | Lombok, Validation Jakarta, Feign, Docker |
 
 ### 🚀 8. Lancement du projet
 **Via Docker :**
