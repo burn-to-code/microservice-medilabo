@@ -34,7 +34,7 @@ Application Micro Service
 
 
 
-## 🏷️ 1. Présentation générale
+##  1. Présentation générale
 Medilabo est une application distribuée basée sur une architecture microservices permettant de gérer les patients d’un laboratoire médical.  
 Elle se compose de plusieurs services indépendants communiquant via Spring Cloud Gateway et Feign Client.
 
@@ -56,7 +56,7 @@ Elle se compose de plusieurs services indépendants communiquant via Spring Clou
 - Docker & Docker Compose
 - Maven 3.9+
 
-## ⚙️ 2. Architecture microservices
+##  2. Architecture microservices
 Le projet repose sur 4 microservices + un module commun :
 
 | Service | Port | Description                                                            |
@@ -77,7 +77,7 @@ Le projet repose sur 4 microservices + un module commun :
 - Gère la sécurité, les filtres, et le routage
 - Différencie les routes internes API des routes utilisateurs
 
-## 🗂️ 3. Structure du projet
+##  3. Structure du projet
 
 ```text
 microservice-medilabo/
