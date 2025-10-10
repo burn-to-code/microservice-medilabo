@@ -1,29 +1,27 @@
 package com.microservice.front.config;
 
+import com.microservice.front.config.security.AuthSession;
 import feign.Logger;
 import feign.RequestInterceptor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Base64;
-
 @Configuration
 public class BasicAuthClientConfig {
-    @Value("${spring.application.rest.client.basic-auth.username}")
-    private String username;
-    @Value("${spring.application.rest.client.basic-auth.password}")
-    private String password;
+
+    private final AuthSession authSession;
+
+    public BasicAuthClientConfig(AuthSession authSession) {
+        this.authSession = authSession;
+    }
 
     @Bean
-    public RequestInterceptor basicAuthRequestInterceptor() {
+    public RequestInterceptor dynamicBasicAuthInterceptor() {
         return requestTemplate -> {
-            // compose the auth string in the format: "username:password"
-            final String auth = username + ":" + password;
-            // encode it
-            final String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
-            // and pass it as an Authorization header
-            requestTemplate.header("Authorization", "Basic " + encodedAuth);
+            String authHeader = authSession.getAuthHeader();
+            if (authHeader != null) {
+                requestTemplate.header("Authorization", authHeader);
+            }
         };
     }
 
