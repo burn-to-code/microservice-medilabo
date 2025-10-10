@@ -171,9 +171,8 @@ microservice-medilabo/
 **Exemples :** PatientDTO, Gender (Enum)
 
 ### 🔒 5. Sécurité
-**Deux niveaux de filtrage dans la Gateway :**
-- **FilterChain interne** → protège les API (/patients, /internal/...)
-- **FilterChain utilisateur** → gère la session et l’authentification via formLogin
+**niveaux de filtrage dans la Gateway :**
+- **FilterChain BasicAuth + csrf Disable** → protège la Gateway et le back end via BasicAuth
 
 Chaque requête front passe obligatoirement par la Gateway, qui valide l’accès avant redirection vers le service cible.
 
