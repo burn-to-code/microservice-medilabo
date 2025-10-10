@@ -1,10 +1,8 @@
 package com.microservice.front.controller;
 
 import com.microservice.front.client.PatientClientInterface;
-import com.microservice.front.config.FeignExceptionConfig;
 import com.microservice.front.config.security.AuthSession;
 import feign.FeignException;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +23,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String tryLogin(@RequestParam String username, @RequestParam String password, Model model, HttpSession httpSession){
+    public String tryLogin(@RequestParam String username, @RequestParam String password, Model model){
         authSession.login(username, password);
         try {
             patientClientInterface.getAllPatients();
