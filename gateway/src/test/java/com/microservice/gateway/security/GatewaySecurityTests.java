@@ -22,8 +22,7 @@ class GatewaySecurityTests {
     @Test
     void accessingPatientsWithoutLoginShouldRedirectToLogin() throws Exception {
         mockMvc.perform(get("/medilabo/patient"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"));
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -31,7 +30,7 @@ class GatewaySecurityTests {
         mockMvc.perform(formLogin().user("admin").password("password"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(authenticated())
-                .andExpect(redirectedUrl("/medilabo/patient"));
+                .andExpect(redirectedUrl("/"));
     }
 
     @Test

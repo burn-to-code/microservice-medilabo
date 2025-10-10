@@ -11,7 +11,7 @@
     <div class="container mt-4">
         <h1 class="mb-4">Ajouter un patient</h1>
 
-        <form th:action="@{/medilabo/patient/save}" th:object="${patient}" method="post" class="needs-validation" >
+        <form th:action="@{/patient/save}" th:object="${patient}" method="post" class="needs-validation" >
             <!-- Prénom -->
             <div class="mb-3">
                 <label for="firstName" class="form-label">Prénom</label>
@@ -66,7 +66,7 @@
 
             <!-- Boutons -->
             <div class="d-flex justify-content-between">
-                <a th:href="@{/medilabo/patient}" class="btn btn-secondary">Retour</a>
+                <a th:href="@{/patient}" class="btn btn-secondary">Retour</a>
                 <button type="submit" class="btn btn-primary">Enregistrer</button>
             </div>
         </form>

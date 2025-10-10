@@ -14,7 +14,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableWebSecurity
 public class SecurityConfig {
 
-
     @Bean
     public UserDetailsService users(PasswordEncoder passwordEncoder) {
         UserDetails user = User.builder()

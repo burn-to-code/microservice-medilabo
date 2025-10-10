@@ -13,7 +13,7 @@
 
 
 
-        <form th:action="@{/medilabo/patient/edit/{id}(id=${patient.id})}"
+        <form th:action="@{/patient/edit/{id}(id=${patient.id})}"
               th:object="${patient}" method="post" class="needs-validation" >
 
             <!-- Prénom -->
@@ -61,7 +61,7 @@
 
             <!-- Boutons -->
             <div class="d-flex justify-content-between">
-                <a th:href="@{/medilabo/patient}" class="btn btn-secondary">Annuler</a>
+                <a th:href="@{/patient}" class="btn btn-secondary">Annuler</a>
                 <button type="submit" class="btn btn-primary">Enregistrer</button>
             </div>
         </form>
