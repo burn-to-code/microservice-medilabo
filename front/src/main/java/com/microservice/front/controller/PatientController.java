@@ -41,7 +41,7 @@ public class PatientController {
             return "patient/add";
         }
         patientService.savePatient(patient);
-        return "redirect:/medilabo/patient";
+        return "redirect:/patient";
     }
 
     @GetMapping("/edit/{id}")
@@ -60,6 +60,6 @@ public class PatientController {
         log.debug("Sending patient update: {}", patient);
 
         patientService.updatePatient(id, patient);
-        return "redirect:/medilabo/patient";
+        return "redirect:/patient";
     }
 }
