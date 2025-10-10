@@ -62,15 +62,14 @@ Le projet repose sur 4 microservices + un module commun :
 | Service | Port | Description                                                            |
 |---------|------|------------------------------------------------------------------------|
 | patient | 8081 | Service métier responsable de la gestion des patients                  |
-| gateway | 8080 | Point d’entrée unique de l’application, gère la sécurité et le routage |
-| front   | 8082 | Interface utilisateur (Thymeleaf)                                      |
+| gateway | 8082 | Point d’entrée unique de l’application, gère la sécurité et le routage |
+| front   | 8080 | Interface utilisateur (Thymeleaf)                                      |
 | common  | —    | Contient les DTO, enums et classes partagées                           |
 
 ### 🔀 Communication interservices
 - Le front communique uniquement avec la gateway
 - La gateway redirige les requêtes vers patient
 - Les appels internes utilisent Feign Client
-- Toutes les API sont accessibles via un préfixe `/medilabo/...`
 
 ### 🔒 Gateway
 - Fait office de reverse proxy
@@ -163,7 +162,7 @@ microservice-medilabo/
 **Exemple de redirection** 
 
 ```bash
-/medilabo/patient → front (UI)
+/patient → front (UI)
 /patients → patient (API)
 ```
 
@@ -205,8 +204,8 @@ docker-compose up --build
 
 Les services seront accessibles sur :
 
-- **Gateway** → http://localhost:8080
-- **Front** → http://localhost:8082/medilabo/patient
+- **Gateway** → http://localhost:8082
+- **Front** → http://localhost:8080/patient
 - **Patient API** → http://localhost:8081/patients
 
 ### Via Maven
