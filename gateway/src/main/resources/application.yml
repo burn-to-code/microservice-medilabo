@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
 
 spring:
   application:
@@ -16,16 +16,6 @@ spring:
                 - Path=/patients/**
               filters:
                 - StripPrefix=0
-
-            - id: front-service
-              uri: http://front:8082
-              predicates:
-                - Path=/medilabo/**
-              filters:
-                - StripPrefix=1
-                - AddRequestHeader=X-Forwarded-Host, localhost:8080
-                - AddRequestHeader=X-Forwarded-Port, 8080
-                - AddRequestHeader=X-Forwarded-Proto, http
 
 logging:
   level:
