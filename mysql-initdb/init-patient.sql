@@ -1,15 +1,13 @@
--- Création de la table Patient
 CREATE TABLE patient (
-     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-     first_name VARCHAR(100) NOT NULL,
-     last_name VARCHAR(100) NOT NULL,
-     date_of_birth DATE NOT NULL,
-     gender VARCHAR(10) NOT NULL,
-     address VARCHAR(255),
-     phone_number VARCHAR(50)
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         first_name VARCHAR(100) NOT NULL,
+                         last_name VARCHAR(100) NOT NULL,
+                         date_of_birth DATE NOT NULL,
+                         gender VARCHAR(10) NOT NULL,
+                         address VARCHAR(255),
+                         phone_number VARCHAR(50)
 );
 
--- Insertion des 4 patients de test
 INSERT INTO patient (first_name, last_name, date_of_birth, gender, address, phone_number)
 VALUES
     ('TestNone', 'Test', '1966-12-31', 'F', '1 Brookside St', '100-222-3333'),
