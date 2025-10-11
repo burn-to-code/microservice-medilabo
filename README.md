@@ -65,11 +65,12 @@ Le projet repose sur 4 microservices + un module commun :
 | gateway | 8082 | Point d’entrée unique de l’application, gère la sécurité et le routage |
 | front   | 8080 | Interface utilisateur (Thymeleaf)                                      |
 | common  | —    | Contient les DTO, enums et classes partagées                           |
+| eureka  | 8761 | Serveur de découverte des service (Eureka)                             |
 
 ### 🔀 Communication interservices
-- Le front communique uniquement avec la gateway
-- La gateway redirige les requêtes vers patient
-- Les appels internes utilisent Feign Client
+- Tous les microservices (front, patient, gateway) sont désormais enregistrés dans Eureka pour permettre la découverte et le load-balancing côté Feign/Gateway.
+- Les URLs ne pointent plus directement vers les services (http://gateway:8082) mais utilisent le serviceId Eureka (lb://gateway) via Spring Cloud LoadBalancer.
+- Les appels internes utilisent Feign Client via Eureka.
 
 ### 🔒 Gateway
 - Fait office de reverse proxy
@@ -145,18 +146,21 @@ microservice-medilabo/
 
 **Vue Thymeleaf :**
 
+- login.html
 - patient/list.html
 - patient/add.html
 - patient/edit.html
+- error.html
 
 ### 4.3 🌐 Gateway
 **Rôle :**
 
 - Routage et filtrage des requêtes
+- Passage de Spring MVC + WebSecurity vers Spring WebFlux + WebFluxSecurity
 - Application de la sécurité
-- Gestion des deux SecurityFilterChain :
-  - Filtrage des API internes (BasicAuth)
-  - Filtrage des API externes (FormLogin)
+- Gestion de la SecurityWebFilterChain :
+  - Sécurité appliquée via BasicAuth + SecurityWebFilterChain
+  - CSRF désactivé pour permettre les appels Feign POST/PUT depuis le front
 - Spring Cloud Gateway
 
 **Exemple de redirection** 
@@ -170,13 +174,30 @@ microservice-medilabo/
 **Contient les DTO, enums, et classes partagées.**  
 **Exemples :** PatientDTO, Gender (Enum)
 
+### 4.5 🌟 Eureka
+**Objectif :** gestion de la découverte des microservices et du load-balancing  
+**Port :** 8761
+
+**Fonctionnalités :**
+- Chaque microservice (`front`, `gateway`, `patient`) s’enregistre automatiquement sur Eureka au démarrage.
+- Permet aux clients Feign et à la Gateway de résoudre dynamiquement les adresses des services via leur `serviceId`.
+- Compatible avec Spring Cloud LoadBalancer pour équilibrer la charge si plusieurs instances sont présentes.
+
+**Exemple :**
+- Front → Gateway via `lb://gateway`
+- Gateway → Patient via `lb://patient`
+
+**Accès UI Eureka :**
+```text
+http://localhost:8761
+
+
 ### 🔒 5. Sécurité
 **niveaux de filtrage dans la Gateway :**
-- **FilterChain BasicAuth + csrf Disable** → protège la Gateway et le back end via BasicAuth
+- Front → Gateway → Patient : tout passe par la Gateway, qui applique BasicAuth.
+- Les appels Feign depuis le front vers la Gateway utilisent maintenant BasicAuth dynamique (header Authorization) fourni par AuthSession.
+- Les requêtes non authentifiées renvoient 401 Unauthorized, permettant au front de gérer la redirection vers /login.
 
-Chaque requête front passe obligatoirement par la Gateway, qui valide l’accès avant redirection vers le service cible.
-
-### 🧪 6. Stratégie de test
 **Tests unitaires :**
 - Mock du PatientService
 - Utilisation de JUnit 5 et Mockito
@@ -203,11 +224,14 @@ docker-compose up --build
 
 Les services seront accessibles sur :
 
-- **Gateway** → http://localhost:8082
+- Tous les services doivent démarrer avec Eureka actif pour être découverts correctement : 
+- **Eureka** -> http://localhost:8761/
+- **Gateway** → http://localhost:8082/
 - **Front** → http://localhost:8080/patient
 - **Patient API** → http://localhost:8081/patients
 
 ### Via Maven
+- **Sur tous les services :**
 ```bash
 mvn clean install
 mvn spring-boot:run
