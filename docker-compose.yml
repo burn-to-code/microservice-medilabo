@@ -21,20 +21,27 @@ services:
     ports:
       - "8081:8081"
     depends_on:
+      eureka:
+        condition: service_healthy
       mysql:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/patientdb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
 
   gateway:
     build: ./gateway
     ports:
       - "8082:8082"
     depends_on:
+      eureka:
+        condition: service_healthy
       patient:
         condition: service_started
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
 
   front:
     build: ./front
@@ -43,3 +50,18 @@ services:
     depends_on:
       - gateway
       - patient
+      - eureka
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
+
+  eureka:
+    build: ./Eureka-Server
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
