@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -26,13 +27,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public void handleNotFoundException(NotFoundException e, HttpServletResponse response) throws Exception{
         log.error("Resource not found: {}", e.getMessage());
-        response.sendRedirect("/medilabo/patient?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
+        response.sendRedirect("/patient?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
     }
 
     @ExceptionHandler(ConflictException.class)
     public void handleConflictException(ConflictException e, HttpServletResponse response) throws IOException {
         log.error("Conflict: {}", e.getMessage());
-        response.sendRedirect("/medilabo/patient?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
+        response.sendRedirect("/patient?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
     }
 
     @ExceptionHandler(FeignException.Unauthorized.class)
@@ -46,6 +47,18 @@ public class GlobalExceptionHandler {
             model.addFlashAttribute("error", "Veuillez vous connecter.");
         }
         return "redirect:/login";
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public String handleNotFound(NoResourceFoundException e, Model model) {
+        log.error("Page non trouvée : {}", e.getMessage());
+
+        if (auth.getAuthHeader() == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("error", "La page demandée n'existe pas.");
+        return "error";
     }
 
     @ExceptionHandler(RuntimeException.class)
