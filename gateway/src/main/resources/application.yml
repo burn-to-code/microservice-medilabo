@@ -12,10 +12,14 @@ spring:
   cloud:
     gateway:
       server:
-        webmvc:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
           routes:
             - id: patient-service
-              uri: http://patient:8081
+              uri: lb://patient
               predicates:
                 - Path=/patients/**
               filters:

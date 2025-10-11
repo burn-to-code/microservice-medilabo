@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(
-        name = "patient-service",
-        url = "${spring.application.rest.client.url}"
+        name = "gateway"
 )
 public interface PatientClientInterface {
 
