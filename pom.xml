@@ -13,5 +13,6 @@
         <module>front</module>
         <module>patient</module>
         <module>gateway</module>
+        <module>Eureka-Server</module>
     </modules>
 </project>
