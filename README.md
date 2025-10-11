@@ -190,7 +190,7 @@ microservice-medilabo/
 **Accès UI Eureka :**
 ```text
 http://localhost:8761
-
+```
 
 ### 🔒 5. Sécurité
 **niveaux de filtrage dans la Gateway :**
