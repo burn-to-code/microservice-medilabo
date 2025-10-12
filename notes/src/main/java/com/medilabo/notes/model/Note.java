@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Past;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +17,16 @@ public class Note {
     private String id;
 
     @NotNull(message = "Patient id must not be null")
+    @Field("patId")
     private Long patientId;
+
+    @Field("patient")
     @NotBlank(message = "Patient name must not be blank")
     private String patientName;
+
     @NotBlank(message = "Note must not be blank")
     private String note;
+
     @NotNull(message = "Date of birth must not be null")
     @Past(message = "Date of birth must be in the past")
     private LocalDateTime date;
