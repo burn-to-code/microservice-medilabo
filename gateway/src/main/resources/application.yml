@@ -15,7 +15,7 @@ spring:
         webflux:
           discovery:
             locator:
-              enabled: true
+              enabled: false
               lower-case-service-id: true
           routes:
             - id: patient-service
@@ -24,6 +24,14 @@ spring:
                 - Path=/patients/**
               filters:
                 - StripPrefix=0
+
+            - id: notes-service
+              uri: lb://notes
+              predicates:
+                - Path=/notes/**
+              filters:
+                - StripPrefix=0
+
 
 logging:
   level:
