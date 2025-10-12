@@ -14,5 +14,6 @@
         <module>patient</module>
         <module>gateway</module>
         <module>Eureka-Server</module>
+        <module>notes</module>
     </modules>
 </project>
