@@ -77,3 +77,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
+  notes:
+    build: ./notes
+    ports:
+      - "8083:8083"
+    depends_on:
+      eureka:
+        condition: service_healthy
+      mongo-notes:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
+      SPRING_DATA_MONGODB_URI: mongodb://mongo-notes:27017/notesdb
