@@ -17,6 +17,16 @@ services:
       timeout: 5s
       retries: 10
 
+  mongo-notes:
+    image: mongo:6
+    container_name: notes-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: notesdb
+    volumes:
+      - ./mongo-initdb:/docker-entrypoint-initdb.d
+
 
   patient:
     build: ./patient
