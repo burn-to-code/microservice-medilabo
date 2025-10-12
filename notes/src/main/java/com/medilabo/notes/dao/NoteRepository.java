@@ -11,3 +11,4 @@ public interface NoteRepository extends MongoRepository<Note, String> {
 
     List<Note> findByPatientIdOrderByDateDesc(Long patientId);
 }
+

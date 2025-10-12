@@ -1,8 +1,8 @@
 package com.project.common.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record NoteResponseDTO(
-        String notes,
-        LocalDateTime time
+        String note,
+        LocalDate time
 ) {}

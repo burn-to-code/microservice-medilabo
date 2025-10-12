@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Document(collection = "notes")
 @Data
@@ -29,12 +29,12 @@ public class Note {
 
     @NotNull(message = "Date of birth must not be null")
     @Past(message = "Date of birth must be in the past")
-    private LocalDateTime date;
+    private LocalDate date;
 
     public Note(Long patientId, String patientName, String note) {
         this.patientId = patientId;
         this.patientName = patientName;
         this.note = note;
-        this.date = LocalDateTime.now();
+        this.date = LocalDate.now();
     }
 }
