@@ -2,43 +2,58 @@ package com.microservice.gateway.security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GatewaySecurityTests {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
+    @TestConfiguration
+    static class TestControllerConfig {
+        @RestController
+        static class TestController {
+            @GetMapping("/test")
+            public Mono<String> getPatients() {
+                return Mono.just("OK");
+            }
+        }
+    }
     @Test
-    void accessingPatientsWithoutLoginShouldRedirectToLogin() throws Exception {
-        mockMvc.perform(get("/medilabo/patient"))
-                .andExpect(status().is4xxClientError());
+    void accessingPatientsWithoutLoginShouldReturnUnauthorized() {
+        webTestClient.get().uri("/test")
+                .exchange()
+                .expectStatus().isUnauthorized();
     }
 
     @Test
-    void loginWithValidUserShouldSucceed() throws Exception {
-        mockMvc.perform(formLogin().user("admin").password("password"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(authenticated())
-                .andExpect(redirectedUrl("/"));
+    void loginWithValidUserShouldSucceed() {
+        String basicAuthHeader = "Basic " + java.util.Base64.getEncoder()
+                .encodeToString("admin:password".getBytes());
+
+        webTestClient.get().uri("/test")
+                .header(HttpHeaders.AUTHORIZATION, basicAuthHeader)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class).isEqualTo("OK");
     }
 
     @Test
-    void wrongPasswordShouldFailLogin() throws Exception {
-        mockMvc.perform(formLogin().user("admin").password("wrong"))
-                .andExpect(unauthenticated())
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?error"));
+    void wrongPasswordShouldFailLogin() {
+        String basicAuthHeader = "Basic " + java.util.Base64.getEncoder()
+                .encodeToString("admin:wrong".getBytes());
+
+        webTestClient.get().uri("/test")
+                .header(HttpHeaders.AUTHORIZATION, basicAuthHeader)
+                .exchange()
+                .expectStatus().isUnauthorized();
     }
 }
 
