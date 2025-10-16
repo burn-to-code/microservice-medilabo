@@ -2,13 +2,13 @@ package com.microservice.front.controller;
 
 import com.microservice.front.service.NoteService;
 import com.microservice.front.service.PatientService;
+import com.project.common.dto.NoteRequestDTO;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/history")
@@ -23,17 +23,25 @@ public class HistoryController {
         this.noteService = noteService;
     }
 
-    @GetMapping
-    public String listHistoryWithPatientId(@RequestParam("PatientId") Long PatientId, Model model){
-        log.debug("Getting history with patient id {}", PatientId);
+    @GetMapping("/{id}")
+    public String listHistoryWithPatientId(@PathVariable Long id, Model model){
+        log.debug("Getting history with patient id {}", id);
 
-        Assert.notNull(PatientId, "PatientId must not be null");
-        Assert.isTrue(PatientId > 0, "PatientId must be greater than 0");
+        Assert.notNull(id, "PatientId must not be null");
+        Assert.isTrue(id > 0, "PatientId must be greater than 0");
 
-        model.addAttribute("patient", patientService.getPatientById(PatientId));
-        model.addAttribute("notes", noteService.getNoteAndDateByPatientId(PatientId));
+        model.addAttribute("patient", patientService.getPatientById(id));
+        model.addAttribute("notes", noteService.getNoteAndDateByPatientId(id));
 
-        return "history";
+        return "patient/history";
+    }
+
+    @PostMapping("/save")
+    public String saveNote(@Valid @ModelAttribute("noteRequest") NoteRequestDTO note){
+        log.debug("Saving note {}", note);
+        noteService.saveNote(note);
+
+        return "redirect:/history/" + note.patientID();
     }
 
 }
