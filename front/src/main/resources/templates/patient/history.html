@@ -46,6 +46,8 @@
 
             <button type="submit" class="btn btn-success">Enregistrer</button>
         </form>
+
+        <div th:if="${error}" class="alert alert-danger mt-3" role="alert" th:text="${error}"></div>
     </div>
 
     <!-- LISTE DES NOTES -->
@@ -54,6 +56,7 @@
         <div th:if="${notes == null or #lists.isEmpty(notes)}">
             <p class="text-muted">Aucune note enregistrée pour ce patient.</p>
         </div>
+
 
         <div th:if="${notes != null and !#lists.isEmpty(notes)}">
             <ul class="list-group">
