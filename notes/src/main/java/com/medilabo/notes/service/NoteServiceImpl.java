@@ -23,7 +23,7 @@ public class NoteServiceImpl implements NoteService {
     public void saveNote(NoteRequestDTO dto){
         Assert.notNull(dto, "Note request dto must not be null");
         log.debug("Saving note {}", dto);
-        noteRepository.save(new Note(dto.patientID(), dto.patientName(), dto.note()));
+        noteRepository.save(new Note(dto.getPatientID(), dto.getPatientName(), dto.getNote()));
     }
 
     @Override
