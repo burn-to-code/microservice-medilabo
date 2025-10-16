@@ -36,10 +36,9 @@
     <div class="card p-3 shadow-sm mb-4">
         <form th:action="@{/history/save}" th:object="${noteRequest}" method="post">
 
-            <input type="hidden" th:field="*{patientID}" th:value="${patient.id}">
-            <input type="hidden" th:field="*{patientName}" th:value="${patient.firstName}">
+            <input type="hidden" th:field="*{patientID}">
+            <input type="hidden" th:field="*{patientName}">
 
-            <!-- Saisie note -->
             <div class="mb-3">
                 <label for="note" class="form-label">Ajouter une note :</label>
                 <textarea id="note" class="form-control" th:field="*{note}" placeholder="Écrivez votre note ici..." rows="3" required></textarea>
