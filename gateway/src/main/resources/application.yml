@@ -32,6 +32,13 @@ spring:
               filters:
                 - StripPrefix=0
 
+            - id : risk-service
+              uri: lb://risk
+              predicates:
+                - Path=/risk/**
+              filters:
+                - StripPrefix=0
+
 
 logging:
   level:
