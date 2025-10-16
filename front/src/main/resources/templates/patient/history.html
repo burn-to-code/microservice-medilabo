@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historique du patient</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- HEADER -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+
+<!-- CONTENU PRINCIPAL -->
+<div class="container mt-4">
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" th:href="@{/patients}">Retour</a></li>
+        </ul>
+    </div>
+    <!-- TITRE -->
+    <h1 class="mb-4 text-center">Historique du patient <span th:text="${patient.firstName + ' ' + patient.lastName}"></span></h1>
+
+    <!-- INFOS PATIENT -->
+    <h2 class="mt-4">Infos</h2>
+    <div class="card p-3 mb-4 shadow-sm">
+        <p><strong>Nom :</strong> <span th:text="${patient.lastName}"></span></p>
+        <p><strong>Prénom :</strong> <span th:text="${patient.firstName}"></span></p>
+        <p><strong>Date de naissance :</strong> <span th:text="${patient.dateOfBirth}"></span></p>
+        <p><strong>Genre :</strong> <span th:text="${patient.gender}"></span></p>
+        <p><strong>Adresse :</strong> <span th:text="${patient.address}"></span></p>
+        <p><strong>Téléphone :</strong> <span th:text="${patient.phoneNumber}"></span></p>
+    </div>
+
+    <!-- AJOUT DE NOTE -->
+    <h2 class="mt-4">Note</h2>
+    <div class="card p-3 shadow-sm mb-4">
+        <form th:action="@{/history/save}" th:object="${noteRequest}" method="post">
+
+            <input type="hidden" th:field="*{patientID}" th:value="${patient.id}">
+            <input type="hidden" th:field="*{patientName}" th:value="${patient.firstName + ' ' + patient.lastName}">
+
+            <!-- Saisie note -->
+            <div class="mb-3">
+                <label for="note" class="form-label">Ajouter une note :</label>
+                <textarea id="note" class="form-control" th:field="*{note}" placeholder="Écrivez votre note ici..." rows="3" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Enregistrer</button>
+        </form>
+    </div>
+
+    <!-- LISTE DES NOTES -->
+    <div class="mt-5">
+        <h3>Notes précédentes</h3>
+        <div th:if="${notes == null or #lists.isEmpty(notes)}">
+            <p class="text-muted">Aucune note enregistrée pour ce patient.</p>
+        </div>
+
+        <div th:if="${notes != null and !#lists.isEmpty(notes)}">
+            <ul class="list-group">
+                <li class="list-group-item" th:each="note : ${notes}">
+                    <div class="d-flex justify-content-between">
+                        <span th:text="${note.note}"></span>
+                        <small class="text-muted" th:text="${#temporals.format(note.time(), 'dd/MM/yyyy')}"></small>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- JS Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
