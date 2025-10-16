@@ -37,7 +37,7 @@
         <td th:text="${p.phoneNumber}"></td>
         <td>
             <a class="btn btn-sm btn-primary me-2" th:href="@{/patient/edit/{id}(id=${p.id})}">Modifier</a>
-            <a class="btn btm-sm btn-secondary" th:href="@{/history/{id}(id=${p.id})}">Supprimer</a>
+            <a class="btn btm-sm btn-primary me-2" th:href="@{/history/{id}(id=${p.id})}">Historique</a>
         </td>
     </tr>
     </tbody>

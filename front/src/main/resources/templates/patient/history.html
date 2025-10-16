@@ -13,10 +13,8 @@
 
 <!-- CONTENU PRINCIPAL -->
 <div class="container mt-4">
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" th:href="@{/patients}">Retour</a></li>
-        </ul>
+    <div class="d-flex justify-content-between">
+        <a th:href="@{/patient}" class="btn btn-secondary">Retour</a>
     </div>
     <!-- TITRE -->
     <h1 class="mb-4 text-center">Historique du patient <span th:text="${patient.firstName + ' ' + patient.lastName}"></span></h1>
@@ -30,6 +28,7 @@
         <p><strong>Genre :</strong> <span th:text="${patient.gender}"></span></p>
         <p><strong>Adresse :</strong> <span th:text="${patient.address}"></span></p>
         <p><strong>Téléphone :</strong> <span th:text="${patient.phoneNumber}"></span></p>
+        <a class="btn btn-sm btn-primary me-2" th:href="@{/patient/edit/{id}(id=${p.id})}">Modifier</a>
     </div>
 
     <!-- AJOUT DE NOTE -->
@@ -38,7 +37,7 @@
         <form th:action="@{/history/save}" th:object="${noteRequest}" method="post">
 
             <input type="hidden" th:field="*{patientID}" th:value="${patient.id}">
-            <input type="hidden" th:field="*{patientName}" th:value="${patient.firstName + ' ' + patient.lastName}">
+            <input type="hidden" th:field="*{patientName}" th:value="${patient.firstName}">
 
             <!-- Saisie note -->
             <div class="mb-3">
