@@ -1,6 +1,6 @@
 package com.microservice.front.service;
 
-import com.microservice.front.client.PatientClientInterface;
+import com.microservice.front.client.GatewayClientInterface;
 import com.project.common.dto.PatientDTO;
 import org.springframework.stereotype.Service;
 
@@ -9,34 +9,34 @@ import java.util.List;
 @Service
 public class PatientServiceImpl implements PatientService{
 
-    private final PatientClientInterface patientClientInterface;
+    private final GatewayClientInterface gatewayClientInterface;
 
-    public PatientServiceImpl(PatientClientInterface patientClientInterface) {
-        this.patientClientInterface = patientClientInterface;
+    public PatientServiceImpl(GatewayClientInterface gatewayClientInterface) {
+        this.gatewayClientInterface = gatewayClientInterface;
     }
 
     @Override
     public List<PatientDTO> getAllPatients() {
-        return patientClientInterface.getAllPatients();
+        return gatewayClientInterface.getAllPatients();
     }
 
     @Override
     public PatientDTO getPatientById(Long id) {
-        return patientClientInterface.getPatientById(id);
+        return gatewayClientInterface.getPatientById(id);
     }
 
     @Override
     public PatientDTO savePatient(PatientDTO patient) {
-        return patientClientInterface.savePatient(patient);
+        return gatewayClientInterface.savePatient(patient);
     }
 
     @Override
     public PatientDTO updatePatient(Long id, PatientDTO patientDetails) {
-        return patientClientInterface.updatePatient(id, patientDetails);
+        return gatewayClientInterface.updatePatient(id, patientDetails);
     }
 
     @Override
     public void deletePatientById(Long id) {
-        patientClientInterface.deletePatientById(id);
+        gatewayClientInterface.deletePatientById(id);
     }
 }

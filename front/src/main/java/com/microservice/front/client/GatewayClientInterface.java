@@ -1,5 +1,7 @@
 package com.microservice.front.client;
 
+import com.project.common.dto.NoteRequestDTO;
+import com.project.common.dto.NoteResponseDTO;
 import com.project.common.dto.PatientDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,7 +12,7 @@ import java.util.List;
 @FeignClient(
         name = "gateway"
 )
-public interface PatientClientInterface {
+public interface GatewayClientInterface {
 
     @GetMapping("/patients")
     List<PatientDTO> getAllPatients();
@@ -26,4 +28,10 @@ public interface PatientClientInterface {
 
     @DeleteMapping("/patients/{id}")
     void deletePatientById(@PathVariable Long id);
+
+    @GetMapping("/notes/{patientId}")
+    List<NoteResponseDTO> getNoteAndDateByPatientId(@PathVariable Long patientId);
+
+    @PostMapping("/notes")
+    void saveNote(@Valid @RequestBody NoteRequestDTO note);
 }
