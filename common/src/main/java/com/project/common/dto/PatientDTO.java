@@ -35,4 +35,22 @@ public class PatientDTO {
 
     private String address;
     private String phoneNumber;
+
+    private String riskOfDiabetes;
+
+    public PatientDTO(Long id,
+                      String firstName,
+                      String lastName,
+                      LocalDate dateOfBirth,
+                      Gender gender,
+                      String address,
+                      String phoneNumber) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 }

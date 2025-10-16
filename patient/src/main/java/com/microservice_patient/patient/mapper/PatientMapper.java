@@ -11,6 +11,7 @@ import org.mapstruct.Named;
 public interface PatientMapper {
 
     @Mapping(target = "gender", source = "gender", qualifiedByName = "toDTOGender")
+    @Mapping(target = "riskOfDiabetes", ignore = true)
     PatientDTO toDTO(Patient patient);
 
     @Mapping(target = "gender", source = "gender", qualifiedByName = "toEntityGender")
