@@ -15,5 +15,6 @@
         <module>gateway</module>
         <module>Eureka-Server</module>
         <module>notes</module>
+        <module>risk</module>
     </modules>
 </project>
