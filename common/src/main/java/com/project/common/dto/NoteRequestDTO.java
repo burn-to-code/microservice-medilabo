@@ -2,12 +2,19 @@ package com.project.common.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record NoteRequestDTO(
-        @NotNull(message = "Patient ID is required")
-        Long patientID,
-        @NotBlank(message = "Patient name is required")
-        String patientName,
-        @NotBlank(message = "Note is required")
-        String note
-) { }
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class NoteRequestDTO {
+    @NotNull(message = "Patient ID is required")
+    private Long patientID;
+    @NotBlank(message = "Patient name is required")
+    private String patientName;
+    @NotBlank(message = "Note is required")
+    private String note;
+
+}
