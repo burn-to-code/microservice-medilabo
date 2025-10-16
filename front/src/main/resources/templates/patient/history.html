@@ -59,7 +59,7 @@
             <ul class="list-group">
                 <li class="list-group-item" th:each="note : ${notes}">
                     <div class="d-flex justify-content-between">
-                        <span th:text="${note.note}"></span>
+                        <span th:text="${note.note}" style="white-space: pre-wrap;"></span>
                         <small class="text-muted" th:text="${#temporals.format(note.time(), 'dd/MM/yyyy')}"></small>
                     </div>
                 </li>
