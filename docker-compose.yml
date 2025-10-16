@@ -85,3 +85,14 @@ services:
     environment:
       EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
       SPRING_DATA_MONGODB_URI: mongodb://mongo-notes:27017/notesdb
+
+  risk:
+    build: ./risk
+    ports:
+      - "8084:8084"
+    depends_on:
+      - eureka
+      - notes
+      - patient
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
