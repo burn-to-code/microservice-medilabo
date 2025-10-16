@@ -23,6 +23,12 @@ public class HistoryController {
         this.noteService = noteService;
     }
 
+    @ModelAttribute("noteRequest")
+    public NoteRequestDTO noteRequest() {
+        return new NoteRequestDTO(0L, "", "");
+    }
+
+
     @GetMapping("/{id}")
     public String listHistoryWithPatientId(@PathVariable Long id, Model model){
         log.debug("Getting history with patient id {}", id);
