@@ -17,4 +17,9 @@ public class NoteRequestDTO {
     @NotBlank(message = "Note is required")
     private String note;
 
+    public NoteRequestDTO(Long patientID, String patientName) {
+        this.patientID = patientID;
+        this.patientName = patientName;
+    }
+
 }
