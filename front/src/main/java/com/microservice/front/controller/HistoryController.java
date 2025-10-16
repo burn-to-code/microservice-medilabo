@@ -23,12 +23,6 @@ public class HistoryController {
         this.noteService = noteService;
     }
 
-    @ModelAttribute("noteRequest")
-    public NoteRequestDTO noteRequest() {
-        return new NoteRequestDTO(0L, "", "");
-    }
-
-
     @GetMapping("/{id}")
     public String listHistoryWithPatientId(@PathVariable Long id, Model model){
         log.debug("Getting history with patient id {}", id);
@@ -38,6 +32,7 @@ public class HistoryController {
 
         model.addAttribute("patient", patientService.getPatientById(id));
         model.addAttribute("notes", noteService.getNoteAndDateByPatientId(id));
+        model.addAttribute("noteRequest", new NoteRequestDTO());
 
         return "patient/history";
     }
@@ -47,7 +42,7 @@ public class HistoryController {
         log.debug("Saving note {}", note);
         noteService.saveNote(note);
 
-        return "redirect:/history/" + note.patientID();
+        return "redirect:/history/" + note.getPatientID();
     }
 
 }
