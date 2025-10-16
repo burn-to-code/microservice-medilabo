@@ -28,7 +28,7 @@
         <p><strong>Genre :</strong> <span th:text="${patient.gender}"></span></p>
         <p><strong>Adresse :</strong> <span th:text="${patient.address}"></span></p>
         <p><strong>Téléphone :</strong> <span th:text="${patient.phoneNumber}"></span></p>
-        <a class="btn btn-sm btn-primary me-2" th:href="@{/patient/edit/{id}(id=${p.id})}">Modifier</a>
+        <a class="btn btn-sm btn-primary me-2" th:href="@{/patient/edit/{id}(id=${patient.id})}">Modifier</a>
     </div>
 
     <!-- AJOUT DE NOTE -->
