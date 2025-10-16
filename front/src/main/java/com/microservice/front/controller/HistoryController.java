@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/history")
@@ -42,10 +43,17 @@ public class HistoryController {
     }
 
     @PostMapping("/save")
-    public String saveNote(@Valid @ModelAttribute("noteRequest") NoteRequestDTO note, BindingResult result){
+    public String saveNote(@Valid @ModelAttribute("noteRequest") NoteRequestDTO note, BindingResult result, RedirectAttributes redirectAttributes){
         if(result.hasErrors()){
+
             log.debug("Binding errors: {}", result.getAllErrors());
-            return "patient/history";
+
+            if(note.getPatientID() == null || note.getPatientID() <= 0 || note.getPatientName().isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Une erreur est survenue");
+                return "redirect:/patient";
+            }
+            redirectAttributes.addFlashAttribute("error", "Veuillez remplir tous les champs");
+            return "redirect:/history/" + note.getPatientID();
         }
         log.debug("Saving note {}", note);
         noteService.saveNote(note);
