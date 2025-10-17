@@ -1,7 +1,6 @@
 package com.microservice.front.integration;
 
 
-import com.microservice.front.config.PatientServiceMockConfig;
 import com.microservice.front.config.security.AuthSession;
 import com.microservice.front.service.PatientService;
 import feign.FeignException;
@@ -10,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
@@ -20,13 +19,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(PatientServiceMockConfig.class)
 class LoginControllerIT {
 
     @Autowired
     AuthSession authSession;
 
-    @Autowired
+    @MockitoBean
     private PatientService patientService;
 
     @Autowired

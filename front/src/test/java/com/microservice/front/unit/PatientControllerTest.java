@@ -1,6 +1,5 @@
 package com.microservice.front.unit;
 
-import com.microservice.front.config.PatientServiceMockConfig;
 import com.microservice.front.controller.PatientController;
 import com.microservice.front.service.PatientService;
 import com.project.common.dto.PatientDTO;
@@ -11,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -25,13 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PatientController.class,
         excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
                 classes = com.microservice.front.exception.GlobalExceptionHandler.class))
-@Import(PatientServiceMockConfig.class)
 class PatientControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockitoBean
     private PatientService patientService;
 
     private PatientDTO validPatient;
