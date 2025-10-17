@@ -1,7 +1,6 @@
 package com.medilabo.notes.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.medilabo.notes.config.NoteServiceMockConfig;
 import com.medilabo.notes.controller.NoteController;
 import com.medilabo.notes.service.NoteService;
 import com.project.common.dto.NoteRequestDTO;
@@ -9,8 +8,8 @@ import com.project.common.dto.NoteResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -21,14 +20,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(NoteServiceMockConfig.class)
 @WebMvcTest(NoteController.class)
 class NoteControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockitoBean
     private NoteService noteService;
 
     @Autowired
