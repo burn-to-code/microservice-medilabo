@@ -1,8 +1,10 @@
 package com.microservice.front.integration;
 
 import com.microservice.front.service.NoteService;
-import com.microservice.front.service.PatientService;
+import com.microservice.front.service.RiskService;
 import com.project.common.dto.PatientDTO;
+import com.project.common.model.Gender;
+import com.project.common.model.LevelRiskOfDiabetes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class HistoryControllerIT {
 
     @MockitoBean
-    private PatientService patientService;
+    private RiskService riskService;
 
     @MockitoBean
     private NoteService noteService;
@@ -41,15 +43,16 @@ class HistoryControllerIT {
                 "John",
                 "Doe",
                 LocalDate.of(1990, 1, 1),
-                null,
+                Gender.M,
                 "123 Street",
                 "0123456789"
         );
+        patient.setRiskOfDiabetes(LevelRiskOfDiabetes.None);
     }
 
     @Test
     void listHistoryWithPatientId_shouldReturnHistoryView() throws Exception {
-        Mockito.when(patientService.getPatientById(1L)).thenReturn(patient);
+        Mockito.when(riskService.getPatientWithRiskById(1L)).thenReturn(patient);
         Mockito.when(noteService.getNoteAndDateByPatientId(1L)).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/history/1"))

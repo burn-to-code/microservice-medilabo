@@ -3,6 +3,7 @@ package com.microservice.front.integration;
 import com.microservice.front.exception.ConflictException;
 import com.microservice.front.exception.NotFoundException;
 import com.microservice.front.service.PatientService;
+import com.microservice.front.service.RiskService;
 import com.project.common.model.Gender;
 import com.project.common.dto.PatientDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,9 @@ class PatientControllerIT {
     @MockitoBean
     private PatientService patientService;
 
+    @MockitoBean
+    private RiskService riskService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -47,11 +51,12 @@ class PatientControllerIT {
                 "123 Street",
                 "0123456789"
         );
+        validPatient.setRiskOfDiabetes(com.project.common.model.LevelRiskOfDiabetes.None);
     }
 
     @Test
     void listPatient_shouldReturnViewWithPatients() throws Exception {
-        Mockito.when(patientService.getAllPatients()).thenReturn(Collections.singletonList(validPatient));
+        Mockito.when(riskService.getPatientsWithRisk()).thenReturn(Collections.singletonList(validPatient));
 
         mockMvc.perform(get("/patient"))
                 .andExpect(status().isOk())

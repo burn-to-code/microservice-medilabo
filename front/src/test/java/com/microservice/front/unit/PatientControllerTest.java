@@ -2,6 +2,7 @@ package com.microservice.front.unit;
 
 import com.microservice.front.controller.PatientController;
 import com.microservice.front.service.PatientService;
+import com.microservice.front.service.RiskService;
 import com.project.common.dto.PatientDTO;
 import com.project.common.model.Gender;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,9 @@ class PatientControllerTest {
     @MockitoBean
     private PatientService patientService;
 
+    @MockitoBean
+    private RiskService riskService;
+
     private PatientDTO validPatient;
 
     @BeforeEach
@@ -45,11 +49,12 @@ class PatientControllerTest {
                 "123 Street",
                 "0123456789"
         );
+        validPatient.setRiskOfDiabetes(com.project.common.model.LevelRiskOfDiabetes.None);
     }
 
     @Test
     void listPatient_shouldReturnViewWithPatients() throws Exception {
-        when(patientService.getAllPatients()).thenReturn(Collections.singletonList(validPatient));
+        when(riskService.getPatientsWithRisk()).thenReturn(Collections.singletonList(validPatient));
 
         mockMvc.perform(get("/patient"))
                 .andExpect(status().isOk())
