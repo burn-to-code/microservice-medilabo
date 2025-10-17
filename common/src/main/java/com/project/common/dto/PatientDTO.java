@@ -2,6 +2,7 @@ package com.project.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.common.model.Gender;
+import com.project.common.model.LevelRiskOfDiabetes;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -36,7 +37,7 @@ public class PatientDTO {
     private String address;
     private String phoneNumber;
 
-    private String riskOfDiabetes;
+    private LevelRiskOfDiabetes riskOfDiabetes;
 
     public PatientDTO(Long id,
                       String firstName,
