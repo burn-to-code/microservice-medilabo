@@ -34,4 +34,10 @@ public interface GatewayClientInterface {
 
     @PostMapping("/notes")
     void saveNote(@Valid @RequestBody NoteRequestDTO note);
+
+    @GetMapping("/risk/all")
+    List<PatientDTO> getAllPatientsWithRisk();
+
+    @GetMapping("/risk/{id}")
+    PatientDTO getPatientWithRiskById(@PathVariable Long id);
 }
