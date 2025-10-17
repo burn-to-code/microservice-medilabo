@@ -28,9 +28,6 @@ public class PatientController {
     @GetMapping
     public String listPatient(Model model){
         List<PatientDTO> patients = riskService.getPatientsWithRisk();
-        for(PatientDTO patient : patients){
-            System.out.println("DEBUG patientDTO.riskOfDiabetes = " + patient.getRiskOfDiabetes());
-        }
         model.addAttribute("patients", patients);
         return "patient/list";
     }

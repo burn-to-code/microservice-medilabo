@@ -34,7 +34,6 @@ public class HistoryController {
         Assert.isTrue(id > 0, "PatientId must be greater than 0");
 
         PatientDTO patient = riskService.getPatientWithRiskById(id);
-        System.out.println("DEBUG patientDTO.riskOfDiabetes = " + patient.getRiskOfDiabetes());
 
         model.addAttribute("patient", patient);
         model.addAttribute("notes", noteService.getNoteAndDateByPatientId(id));
