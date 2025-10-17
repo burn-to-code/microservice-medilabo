@@ -28,6 +28,17 @@
         <p><strong>Genre :</strong> <span th:text="${patient.gender}"></span></p>
         <p><strong>Adresse :</strong> <span th:text="${patient.address}"></span></p>
         <p><strong>Téléphone :</strong> <span th:text="${patient.phoneNumber}"></span></p>
+        <p><strong>Risque diabète :</strong>
+            <span th:switch="${patient.riskOfDiabetes.name()}">
+            <span th:case="'None'" style="color: green; font-weight: bold;">Aucun risque</span>
+            <span th:case="'Borderline'" style="color: blue; font-weight: bold;">Risque limité</span>
+            <span th:case="'InDanger'" style="color: orange; font-weight: bold;">Danger</span>
+            <span th:case="'EarlyOnSet'" style="color: red; font-weight: bold;">Apparition Précoce</span>
+            <span th:case="'DonneesInsuffisantes'" style="color: gray; font-weight: bold;">Données insuffisantes</span>
+            <span th:case="'NotManage'" style="color: purple; font-weight: bold;">Inconnu</span>
+            <span th:case="*" style="color: black; font-weight: bold;">Inconnu</span>
+            </span>
+        </p>
         <a class="btn btn-sm btn-primary me-2" th:href="@{/patient/edit/{id}(id=${patient.id})}">Modifier</a>
     </div>
 
