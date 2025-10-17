@@ -167,14 +167,35 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
                 .trim();
     }
 
+    /**
+     * Compte le nombre de facteurs de risque de diabète présents dans les notes d'un patient.
+     * <p>
+     * La méthode normalise d'abord toutes les notes du patient en supprimant les accents,
+     * les caractères spéciaux et en réduisant les espaces multiples. Ensuite, elle parcourt
+     * tous les facteurs définis dans {@link WordsFactorDiabetes} et vérifie leur présence
+     * dans le texte normalisé.
+     * </p>
+     * <p>
+     * Pour gérer les variations linguistiques, le calcul utilise un "radical" du mot-clé
+     * en supprimant les terminaisons simples (pluriel ou féminin) et applique une expression
+     * régulière pour matcher les formes singulier/pluriel et masculin/féminin correspondantes.
+     * Par exemple, un facteur "vertiges" pourra matcher "vertige" dans une note.
+     * </p>
+     * <p>
+     * Chaque facteur n'est compté qu'une seule fois même s'il apparaît plusieurs fois dans les notes.
+     * </p>
+     *
+     * @param notes la liste des {@link NoteResponseDTO} du patient à analyser
+     * @return le nombre total de facteurs de risque présents dans les notes
+     */
     private int countWordFactorsInNotes(List<NoteResponseDTO> notes) {
         String normalizedText = normalizeText(fusionAllPatientNotes(notes));
         int count = 0;
         for(WordsFactorDiabetes factor : WordsFactorDiabetes.values()) {
-            String value = factor.getValue().toLowerCase();
-            // (^|\s) : début ou espace avant
-            // ($|\s) : fin ou espace après
-            String regex = "(^|\\s)" + Pattern.quote(value) + "($|\\s)";
+            String value = normalizeText(factor.getValue().toLowerCase());
+            String radical = value.replaceAll("(es|e|s)$", "");
+            String regex = "\\b" + Pattern.quote(radical) + "(e?s?)?\\b";
+
             if (Pattern.compile(regex).matcher(normalizedText).find()) {
                 count++;
             }
@@ -185,7 +206,7 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
 
     // 3 méthodes pour la logique conditionnelle
     private LevelRiskOfDiabetes levelOfRisk(int age, int score, Gender genre) {
-        if (score == 0) {
+        if (score <= 1) {
             return com.project.common.model.LevelRiskOfDiabetes.None;
         }
 
@@ -201,7 +222,7 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
 
 
     private LevelRiskOfDiabetes levelOfRiskForAgeMoreThan30(int score) {
-        if (score > 2 && score <= 5) {
+        if (score >= 2 && score <= 5) {
             return LevelRiskOfDiabetes.Borderline;
         }
         if (score > 5 && score <= 7) {
