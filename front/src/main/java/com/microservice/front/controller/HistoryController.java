@@ -1,7 +1,7 @@
 package com.microservice.front.controller;
 
 import com.microservice.front.service.NoteService;
-import com.microservice.front.service.PatientService;
+import com.microservice.front.service.RiskService;
 import com.project.common.dto.NoteRequestDTO;
 import com.project.common.dto.PatientDTO;
 import jakarta.validation.Valid;
@@ -18,12 +18,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j
 public class HistoryController {
 
-    private final PatientService patientService;
     private final NoteService noteService;
+    private final RiskService riskService;
 
-    public HistoryController(PatientService patientService, NoteService noteService) {
-        this.patientService = patientService;
+    public HistoryController(NoteService noteService, RiskService riskService) {
         this.noteService = noteService;
+        this.riskService = riskService;
     }
 
     @GetMapping("/{id}")
@@ -33,7 +33,8 @@ public class HistoryController {
         Assert.notNull(id, "PatientId must not be null");
         Assert.isTrue(id > 0, "PatientId must be greater than 0");
 
-        PatientDTO patient = patientService.getPatientById(id);
+        PatientDTO patient = riskService.getPatientWithRiskById(id);
+        System.out.println("DEBUG patientDTO.riskOfDiabetes = " + patient.getRiskOfDiabetes());
 
         model.addAttribute("patient", patient);
         model.addAttribute("notes", noteService.getNoteAndDateByPatientId(id));

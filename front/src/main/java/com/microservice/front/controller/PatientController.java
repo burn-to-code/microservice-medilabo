@@ -1,6 +1,7 @@
 package com.microservice.front.controller;
 
 import com.microservice.front.service.PatientService;
+import com.microservice.front.service.RiskService;
 import com.project.common.dto.PatientDTO;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +18,19 @@ import java.util.List;
 public class PatientController {
 
     private final PatientService patientService;
+    private final RiskService riskService;
 
-    public PatientController(PatientService patientService) {
+    public PatientController(PatientService patientService, RiskService riskService) {
         this.patientService = patientService;
+        this.riskService = riskService;
     }
 
     @GetMapping
     public String listPatient(Model model){
-        List<PatientDTO> patients = patientService.getAllPatients();
+        List<PatientDTO> patients = riskService.getPatientsWithRisk();
+        for(PatientDTO patient : patients){
+            System.out.println("DEBUG patientDTO.riskOfDiabetes = " + patient.getRiskOfDiabetes());
+        }
         model.addAttribute("patients", patients);
         return "patient/list";
     }
