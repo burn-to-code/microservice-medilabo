@@ -1,0 +1,41 @@
+name: Java CI Microservice-Medilabo
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - enhancements
+  pull_request:
+    branches:
+      - main
+      - develop
+      - enhancements
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build project
+        run: mvn -B clean install -DskipTests
+
+      - name: Run tests
+        run: mvn -B test
