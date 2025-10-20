@@ -2,6 +2,7 @@ package com.medilabo.notes.service;
 
 import com.medilabo.notes.dao.NoteRepository;
 import com.medilabo.notes.model.Note;
+import com.medilabo.notes.model.NoteProjection;
 import com.project.common.dto.NoteRequestDTO;
 import com.project.common.dto.NoteResponseDTO;
 import lombok.AllArgsConstructor;
@@ -32,11 +33,10 @@ public class NoteServiceImpl implements NoteService {
         Assert.isTrue(id > 0, "Patient id must be greater than 0");
 
         log.debug("Getting notes and date by patient id {}", id);
-        List<Note> notes = noteRepository.findByPatientIdOrderByDateDesc(id);
+        List<NoteProjection> notes = noteRepository.findNoteAndDateByPatientIdOrderByDateDesc(id);
 
-        log.info("Found {} notes for patient id {}", notes.size(), id);
         return notes.stream()
-                .map(note -> new NoteResponseDTO(note.getNote(), note.getDate()))
+                .map(n -> new NoteResponseDTO(n.getNote(), n.getDate()))
                 .toList();
     }
 }
