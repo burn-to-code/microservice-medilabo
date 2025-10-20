@@ -2,6 +2,7 @@ package com.medilabo.notes.unit;
 
 import com.medilabo.notes.dao.NoteRepository;
 import com.medilabo.notes.model.Note;
+import com.medilabo.notes.model.NoteProjection;
 import com.medilabo.notes.service.NoteServiceImpl;
 import com.project.common.dto.NoteRequestDTO;
 import com.project.common.dto.NoteResponseDTO;
@@ -60,12 +61,15 @@ class NoteServiceTest {
     @Test
     void getNoteAndDateByPatientId_shouldReturnMappedDTOs() {
         // Arrange
-        Note note1 = new Note(1L, "Test Patient", "Note 1");
-        note1.setDate(LocalDate.of(2024, 1, 1));
-        Note note2 = new Note(1L, "Test Patient", "Note 2");
-        note2.setDate(LocalDate.of(2023, 12, 1));
+        NoteProjection note1 = mock(NoteProjection.class);
+        when(note1.getNote()).thenReturn("Note 1");
+        when(note1.getDate()).thenReturn(LocalDate.of(2024, 1, 1));
 
-        when(noteRepository.findByPatientIdOrderByDateDesc(1L))
+        NoteProjection note2 = mock(NoteProjection.class);
+        when(note2.getNote()).thenReturn("Note 2");
+        when(note2.getDate()).thenReturn(LocalDate.of(2023, 12, 1));
+
+        when(noteRepository.findNoteAndDateByPatientIdOrderByDateDesc(1L))
                 .thenReturn(List.of(note1, note2));
 
         // Act
@@ -75,7 +79,7 @@ class NoteServiceTest {
         assertEquals(2, result.size());
         assertEquals("Note 1", result.getFirst().note());
         assertEquals(LocalDate.of(2024, 1, 1), result.getFirst().time());
-        verify(noteRepository, times(1)).findByPatientIdOrderByDateDesc(1L);
+        verify(noteRepository, times(1)).findNoteAndDateByPatientIdOrderByDateDesc(1L);
     }
 
     @Test
@@ -100,12 +104,12 @@ class NoteServiceTest {
 
     @Test
     void getNoteAndDateByPatientId_shouldReturnEmptyList_whenNoNotesFound() {
-        when(noteRepository.findByPatientIdOrderByDateDesc(1L))
+        when(noteRepository.findNoteAndDateByPatientIdOrderByDateDesc(1L))
                 .thenReturn(List.of());
 
         List<NoteResponseDTO> result = noteService.getNoteAndDateByPatientId(1L);
 
         assertTrue(result.isEmpty());
-        verify(noteRepository, times(1)).findByPatientIdOrderByDateDesc(1L);
+        verify(noteRepository, times(1)).findNoteAndDateByPatientIdOrderByDateDesc(1L);
     }
 }

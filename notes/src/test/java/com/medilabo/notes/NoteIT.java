@@ -2,6 +2,7 @@ package com.medilabo.notes;
 
 import com.medilabo.notes.dao.NoteRepository;
 import com.medilabo.notes.model.Note;
+import com.medilabo.notes.model.NoteProjection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,10 @@ public class NoteIT {
         Note note = new Note(1L, "John Doe", "Première note test");
         noteRepository.save(note);
 
-        List<Note> result = noteRepository.findByPatientIdOrderByDateDesc(1L);
+        List<NoteProjection> result = noteRepository.findNoteAndDateByPatientIdOrderByDateDesc(1L);
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getPatientName()).isEqualTo("John Doe");
         assertThat(result.getFirst().getNote()).isEqualTo("Première note test");
         assertThat(result.getFirst().getDate()).isBeforeOrEqualTo(LocalDate.now());
     }
