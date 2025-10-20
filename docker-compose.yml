@@ -98,8 +98,10 @@ services:
       - ./notes/pom.xml:/app/pom.xml
       - ~/.m2:/root/.m2
     depends_on:
-      - eureka
-      - mongo-notes
+      eureka:
+        condition: service_healthy
+      mongo-notes:
+        condition: service_started
     environment:
       EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
       SPRING_DATA_MONGODB_URI: mongodb://mongo-notes:27017/notesdb
