@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary" th:fragment="header">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-        <h1 class="mb-0 text-white">Medilabo</h1>
+        <a th:href="@{/patient}" class="navbar-brand">
+            <h1 class="mb-0 text-white">Medilabo</h1>
+        </a>
         <form th:action="@{/logout}" method="post" class="mb-0">
             <button type="submit" class="btn btn-danger">Déconnexion</button>
         </form>
