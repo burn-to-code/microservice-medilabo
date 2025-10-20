@@ -1,4 +1,6 @@
 spring:
+  main:
+    lazy-initialization: true
   application:
     name: eureka-server
 
@@ -11,3 +13,5 @@ eureka:
     fetch-registry: false
   server:
     enable-self-preservation: false
+
+
