@@ -15,9 +15,8 @@ import org.springframework.util.Assert;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
-
 @Service
 @Slf4j
 public class RiskCalculatorServiceImpl implements RiskCalculatorService {
@@ -57,30 +56,7 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
             return patientList;
         }
         return patientList.stream()
-                .peek(p -> {
-                    try {
-                        log.debug("Calcul du risque pour le patient ID={} Nom={}", p.getId(), p.getLastName());
-                        List<NoteResponseDTO> notes = noteClient.getNoteAndDateByPatientId(p.getId());
-
-                        if (notes.isEmpty()) {
-                            log.warn("Aucune note trouvée pour un patient ID={}", p.getId());
-                        }
-
-                        int age = calculateAgeForOnePatient(p.getDateOfBirth());
-                        int score = countWordFactorsInNotes(notes);
-
-                        LevelRiskOfDiabetes result = levelOfRisk(age, score, p.getGender());
-                        log.info("Résultat patient ID={} : âge={}, score={}, risque={}", p.getId(), age, score, result);
-                        p.setRiskOfDiabetes(result);
-
-                    } catch (FeignException e) {
-                        log.error("Erreur Feign lors de l'appel d'un service externe pour le patient ID={}", p.getId(), e);
-                        p.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
-                    } catch (Exception e) {
-                        log.error("Erreur lors du calcul du risque pour le patient ID={}: {}", p.getId(), e.getMessage());
-                        p.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
-                    }
-                })
+                .peek(this::tryAndCatchCalculateDiabetesWithPatientDTO)
                 .toList();
     }
 
@@ -107,6 +83,11 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
     public PatientDTO calculateDiabeteForOnePatient(Long patientId) {
         Assert.notNull(patientId, "patientId must not be null");
         log.debug("Calcul du risque de diabète pour le patient ID={}", patientId);
+        return tryAndCatchCalculateDiabetesWithPatientId(patientId);
+
+    }
+
+    private PatientDTO tryAndCatchCalculateDiabetesWithPatientId(Long patientId) {
         try {
             PatientDTO patient = patientClient.getPatientById(patientId);
             List<NoteResponseDTO> notes = noteClient.getNoteAndDateByPatientId(patientId);
@@ -118,6 +99,8 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
 
             if (notes.isEmpty() ) {
                 log.warn("Aucune note trouvée pour le patient ID={}", patient.getId());
+                patient.setRiskOfDiabetes(LevelRiskOfDiabetes.None);
+                return patient;
             }
 
             int age = calculateAgeForOnePatient(patient.getDateOfBirth());
@@ -133,6 +116,33 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
         } catch (Exception e) {
             log.error("Échec du calcul du risque pour le patient ID={}: {}", patientId, e.getMessage());
             return createFallBackPatientDTO(patientId);
+        }
+    }
+
+    private void tryAndCatchCalculateDiabetesWithPatientDTO(PatientDTO p) {
+        try {
+            log.debug("Calcul du risque pour le patient ID={} Nom={}", p.getId(), p.getLastName());
+            List<NoteResponseDTO> notes = noteClient.getNoteAndDateByPatientId(p.getId());
+
+            if (notes.isEmpty()) {
+                log.warn("Aucune note trouvée pour un patient ID={}", p.getId());
+                p.setRiskOfDiabetes(LevelRiskOfDiabetes.None);
+                return;
+            }
+
+            int age = calculateAgeForOnePatient(p.getDateOfBirth());
+            int score = countWordFactorsInNotes(notes);
+
+            LevelRiskOfDiabetes result = levelOfRisk(age, score, p.getGender());
+            log.info("Résultat patient ID={} : âge={}, score={}, risque={}", p.getId(), age, score, result);
+            p.setRiskOfDiabetes(result);
+
+        } catch (FeignException e) {
+            log.error("Erreur Feign lors de l'appel d'un service externe pour le patient ID={}", p.getId(), e);
+            p.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
+        } catch (Exception e) {
+            log.error("Erreur lors du calcul du risque pour le patient ID={}: {}", p.getId(), e.getMessage());
+            p.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
         }
     }
 
@@ -189,24 +199,24 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
      * @return le nombre total de facteurs de risque présents dans les notes
      */
     private int countWordFactorsInNotes(List<NoteResponseDTO> notes) {
-        String normalizedText = normalizeText(fusionAllPatientNotes(notes));
         int count = 0;
-        for(WordsFactorDiabetes factor : WordsFactorDiabetes.values()) {
-            String value = normalizeText(factor.getValue().toLowerCase());
-            String radical = value.replaceAll("(es|e|s)$", "");
-            String regex = "\\b" + Pattern.quote(radical) + "(e?s?)?\\b";
 
-            if (Pattern.compile(regex).matcher(normalizedText).find()) {
+        String normalizedText = normalizeText(fusionAllPatientNotes(notes));
+        List<String> values = Arrays.stream(WordsFactorDiabetes.values()).map(WordsFactorDiabetes::getValue).toList();
+
+        for (String value : values) {
+            if (normalizedText.contains(value.toLowerCase())) {
                 count++;
             }
         }
+
         return count;
     }
 
 
     // 3 méthodes pour la logique conditionnelle
     private LevelRiskOfDiabetes levelOfRisk(int age, int score, Gender genre) {
-        if (score <= 1) {
+        if (score <= 0) {
             return com.project.common.model.LevelRiskOfDiabetes.None;
         }
 
@@ -231,7 +241,7 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
         if (score > 7) {
             return LevelRiskOfDiabetes.EarlyOnSet;
         }
-        return LevelRiskOfDiabetes.NotManage;
+        return LevelRiskOfDiabetes.None;
     }
 
     private LevelRiskOfDiabetes levelOfRiskForAgeLessThan30(int score, boolean isMale) {
@@ -248,7 +258,7 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
                 return LevelRiskOfDiabetes.EarlyOnSet;
             }
         }
-        return LevelRiskOfDiabetes.NotManage;
+        return LevelRiskOfDiabetes.None;
     }
 
 }
