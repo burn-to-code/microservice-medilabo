@@ -27,14 +27,14 @@ public class Note {
     @NotBlank(message = "Note must not be blank")
     private String note;
 
-    @NotNull(message = "Date of birth must not be null")
-    @Past(message = "Date of birth must be in the past")
-    private LocalDate date;
+    @Field("date")
+    @Past(message = "Date must be in the past")
+    private LocalDate creationDate;
 
     public Note(Long patientId, String patientName, String note) {
         this.patientId = patientId;
         this.patientName = patientName;
         this.note = note;
-        this.date = LocalDate.now();
+        this.creationDate = LocalDate.now();
     }
 }
