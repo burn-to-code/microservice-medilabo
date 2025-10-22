@@ -2,6 +2,10 @@ package com.microservice.risk.model;
 
 import lombok.Getter;
 
+/**
+ * Pour le bon fonctionnement de l'algorithme de calcul du risque de diabete, prévoir de toujours mettre les mots au
+ * singulier si possible.
+ */
 @Getter
 public enum WordsFactorDiabetes {
 
@@ -13,7 +17,7 @@ public enum WordsFactorDiabetes {
     FUMEUSE("fumeuse"),
     ANORMAL("anormal"),
     CHOLESTEROL("cholesterol"),
-    VERTIGES("vertiges"),
+    VERTIGE("vertige"),
     RECHUTE("rechute"),
     REACTION("reaction"),
     ANTICORPS("anticorps");
