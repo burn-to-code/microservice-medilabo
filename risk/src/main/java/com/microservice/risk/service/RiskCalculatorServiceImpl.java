@@ -49,8 +49,18 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
      */
     @Override
     public List<PatientDTO> calculateDiabeteForAllPatient() {
-        List<PatientDTO> patientList = patientClient.getAllPatients();
+        List<PatientDTO> patientList;
+        try {
+            patientList = patientClient.getAllPatients();
+        } catch (FeignException e){
+            log.error("Impossible de récupérer la liste des patients : {}", e.getMessage(), e);
+            PatientDTO placeholder = new PatientDTO(null, "Indisponible", "Indisponible", null, Gender.UNDEFINED, null, null);
+            placeholder.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
+            return List.of(placeholder);
+        }
+
         log.info("Calcul du risque de diabète pour {} patients", patientList.size());
+
         if (patientList.isEmpty()) {
             log.info("Liste de patient vide, pas de calcul");
             return patientList;
@@ -148,10 +158,16 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
 
     // Pour fallback
     private PatientDTO createFallBackPatientDTO(Long patientId){
-        PatientDTO fallback = new PatientDTO();
-        fallback.setId(patientId);
-        fallback.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
-        return fallback;
+        try {
+            PatientDTO fallback = patientClient.getPatientById(patientId);
+            fallback.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
+            return fallback;
+        } catch (FeignException e) {
+            log.error("Erreur Feign lors de l'appel d'un service externe pour le patient ID={}", patientId, e);
+            PatientDTO fallback = new PatientDTO(patientId, "Inconnu", "Inconnu", null, Gender.UNDEFINED, null, null);
+            fallback.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
+            return fallback;
+        }
     }
 
     // Pour calculer l'age d'un patient'
