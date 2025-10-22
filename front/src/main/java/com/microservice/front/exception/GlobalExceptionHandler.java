@@ -42,9 +42,11 @@ public class GlobalExceptionHandler {
         if(auth.getAuthHeader() != null) {
             log.info("Session expirée : redirection vers /login");
             model.addFlashAttribute("error", "Une erreur s'est produite : Vous avez été déconnecté");
+            auth.logout();
         } else {
             log.info("Accès non authentifié : redirection vers /login");
             model.addFlashAttribute("error", "Veuillez vous connecter.");
+            auth.logout();
         }
         return "redirect:/login";
     }
