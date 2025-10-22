@@ -24,6 +24,9 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(){
+        if(authSession.isAuthenticated()){
+            return "redirect:/patient";
+        }
         return "login";
     }
 
