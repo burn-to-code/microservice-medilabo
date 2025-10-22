@@ -63,11 +63,11 @@ class NoteServiceTest {
         // Arrange
         NoteProjection note1 = mock(NoteProjection.class);
         when(note1.getNote()).thenReturn("Note 1");
-        when(note1.getDate()).thenReturn(LocalDate.of(2024, 1, 1));
+        when(note1.getCreationDate()).thenReturn(LocalDate.of(2024, 1, 1));
 
         NoteProjection note2 = mock(NoteProjection.class);
         when(note2.getNote()).thenReturn("Note 2");
-        when(note2.getDate()).thenReturn(LocalDate.of(2023, 12, 1));
+        when(note2.getCreationDate()).thenReturn(LocalDate.of(2023, 12, 1));
 
         when(noteRepository.findNoteAndDateByPatientIdOrderByDateDesc(1L))
                 .thenReturn(List.of(note1, note2));

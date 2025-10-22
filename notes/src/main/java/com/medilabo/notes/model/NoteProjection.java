@@ -4,5 +4,5 @@ import java.time.LocalDate;
 
 public interface NoteProjection {
     String getNote();
-    LocalDate getDate();
+    LocalDate getCreationDate();
 }

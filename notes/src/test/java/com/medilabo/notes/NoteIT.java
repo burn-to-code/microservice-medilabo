@@ -60,7 +60,7 @@ public class NoteIT {
         // then
         assertThat(result).hasSize(1);
         assertThat(result.getFirst().getNote()).isEqualTo("Première note test");
-        assertThat(result.getFirst().getDate()).isBeforeOrEqualTo(LocalDate.now());
+        assertThat(result.getFirst().getCreationDate()).isBeforeOrEqualTo(LocalDate.now());
     }
 
     @Test

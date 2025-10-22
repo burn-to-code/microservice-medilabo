@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface NoteRepository extends MongoRepository<Note, String> {
 
-    @Query(value = "{'patientId' : ?0}", fields = "{'patId' : 1, 'date' : 1, 'note' : 1}", sort = "{'date' : -1}")
+    @Query(value = "{'patId' : ?0}", fields = "{'patId' : 1, 'date' : 1, 'note' : 1}", sort = "{'date' : -1}")
     List<NoteProjection> findNoteAndDateByPatientIdOrderByDateDesc(Long patientId);
 }
 

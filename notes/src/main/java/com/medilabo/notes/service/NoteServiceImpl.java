@@ -36,7 +36,7 @@ public class NoteServiceImpl implements NoteService {
         List<NoteProjection> notes = noteRepository.findNoteAndDateByPatientIdOrderByDateDesc(id);
 
         return notes.stream()
-                .map(n -> new NoteResponseDTO(n.getNote(), n.getDate()))
+                .map(n -> new NoteResponseDTO(n.getNote(), n.getCreationDate()))
                 .toList();
     }
 }
