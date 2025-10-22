@@ -41,12 +41,6 @@ spring:
               filters:
                 - StripPrefix=0
 
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty.http.server: DEBUG
-
 eureka:
   client:
     service-url:
