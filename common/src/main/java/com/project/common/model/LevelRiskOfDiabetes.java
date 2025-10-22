@@ -5,6 +5,5 @@ public enum LevelRiskOfDiabetes {
     Borderline,
     InDanger,
     EarlyOnSet,
-    DonneesInsuffisantes,
-    NotManage
+    DonneesInsuffisantes
 }
