@@ -373,4 +373,4 @@ mvn spring-boot:run
 
 ### 📜 10. Auteur & Licence
 - **Auteur :** Dylan Senasson
-- **Licence :** Medilabo
+- **Licence :** MIT
