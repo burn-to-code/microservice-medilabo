@@ -1,6 +1,3 @@
-# microservice-medilabo
-Application Micro Service
-
 # 🧬 Microservice Medilabo
 
 ![Build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
@@ -10,12 +7,6 @@ Application Micro Service
 ![Docker](https://img.shields.io/badge/docker-ready-blue?style=flat-square)
 
 > Application distribuée basée sur une architecture **microservices** (Spring Boot, Gateway, Eureka, Feign, Docker).
-
-
-Application Micro Service
-
-
-# 🧬 Microservice Medilabo
 
 ## 📑 Sommaire
 - [1. Présentation générale](#1-présentation-générale)
