@@ -4,5 +4,5 @@ import java.time.LocalDate;
 
 public record NoteResponseDTO(
         String note,
-        LocalDate time
+        LocalDate creationDate
 ) {}

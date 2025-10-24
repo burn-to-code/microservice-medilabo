@@ -78,7 +78,7 @@ class NoteServiceTest {
         // Assert
         assertEquals(2, result.size());
         assertEquals("Note 1", result.getFirst().note());
-        assertEquals(LocalDate.of(2024, 1, 1), result.getFirst().time());
+        assertEquals(LocalDate.of(2024, 1, 1), result.getFirst().creationDate());
         verify(noteRepository, times(1)).findNoteAndDateByPatientIdOrderByDateDesc(1L);
     }
 
