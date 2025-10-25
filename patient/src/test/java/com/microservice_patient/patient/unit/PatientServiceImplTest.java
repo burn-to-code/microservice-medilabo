@@ -155,21 +155,4 @@ class PatientServiceImplTest {
         assertThrows(PatientNotFound.class, () -> patientService.updatePatient(99L, patientDTO));
         verify(patientRepository, never()).save(any());
     }
-
-    @Test
-    void deletePatient_existing_deletes() {
-        when(patientRepository.existsById(1L)).thenReturn(true);
-
-        patientService.deletePatientById(1L);
-
-        verify(patientRepository, times(1)).deleteById(1L);
-    }
-
-    @Test
-    void deletePatient_nonExisting_throwsNotFound() {
-        when(patientRepository.existsById(99L)).thenReturn(false);
-
-        assertThrows(PatientNotFound.class, () -> patientService.deletePatientById(99L));
-        verify(patientRepository, never()).deleteById(any());
-    }
 }

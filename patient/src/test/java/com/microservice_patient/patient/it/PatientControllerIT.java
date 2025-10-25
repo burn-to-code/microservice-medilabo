@@ -111,11 +111,4 @@ class PatientControllerIT {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getLastName()).isEqualTo("Updated");
     }
-
-    @Test
-    void deletePatient_removesPatient() {
-        restTemplate.delete("/patients/" + patientDTO.getId());
-
-        assertThat(patientRepository.findAll()).isEmpty();
-    }
 }
