@@ -67,14 +67,4 @@ public class PatientServiceImpl implements PatientService{
         return patientMapper.toDTO(patientUpdate);
     }
 
-    @Override
-    public void deletePatientById(Long id){
-        log.debug("Deleting patient with id {}", id);
-        if(!patientRepository.existsById(id)){
-            throw new PatientNotFound("Patient with id " + id + " not found");
-        }
-        patientRepository.deleteById(id);
-        log.info("Deleted patient with id {}", id);
-    }
-
 }

@@ -41,10 +41,4 @@ public class PatientController {
     public PatientDTO updatePatient(@PathVariable Long id, @RequestBody @Valid PatientDTO patientDetails){
         return patientService.updatePatient(id, patientDetails);
     }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePatientById(@PathVariable Long id){
-        patientService.deletePatientById(id);
-    }
 }
