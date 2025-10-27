@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface RiskService {
 
-    List<PatientDTO> getPatientsWithRisk();
+    List<PatientDTO> getPatientsWithRisk(List<PatientDTO> patients);
 
-    PatientDTO getPatientWithRiskById(Long id);
+    PatientDTO getPatientWithRisk(PatientDTO patient);
 }

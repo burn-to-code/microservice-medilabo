@@ -1,6 +1,7 @@
 package com.microservice.front.controller;
 
 import com.microservice.front.service.NoteService;
+import com.microservice.front.service.PatientService;
 import com.microservice.front.service.RiskService;
 import com.project.common.dto.NoteRequestDTO;
 import com.project.common.dto.PatientDTO;
@@ -20,10 +21,12 @@ public class HistoryController {
 
     private final NoteService noteService;
     private final RiskService riskService;
+    private final PatientService patientService;
 
-    public HistoryController(NoteService noteService, RiskService riskService) {
+    public HistoryController(NoteService noteService, RiskService riskService, PatientService patientService, PatientService patientService1) {
         this.noteService = noteService;
         this.riskService = riskService;
+        this.patientService = patientService1;
     }
 
     @GetMapping("/{id}")
@@ -32,8 +35,8 @@ public class HistoryController {
 
         Assert.notNull(id, "PatientId must not be null");
         Assert.isTrue(id > 0, "PatientId must be greater than 0");
-
-        PatientDTO patient = riskService.getPatientWithRiskById(id);
+        PatientDTO patientWithNotRisk = patientService.getPatientById(id);
+        PatientDTO patient = riskService.getPatientWithRisk(patientWithNotRisk);
 
         model.addAttribute("patient", patient);
         model.addAttribute("notes", noteService.getNoteAndDateByPatientId(id));

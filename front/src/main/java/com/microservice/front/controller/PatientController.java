@@ -27,8 +27,9 @@ public class PatientController {
 
     @GetMapping
     public String listPatient(Model model){
-        List<PatientDTO> patients = riskService.getPatientsWithRisk();
-        model.addAttribute("patients", patients);
+        List<PatientDTO> patientsWithNotRIsk = patientService.getAllPatients();
+        List<PatientDTO> patientsWithRisk = riskService.getPatientsWithRisk(patientsWithNotRIsk);
+        model.addAttribute("patients", patientsWithRisk);
         return "patient/list";
     }
 

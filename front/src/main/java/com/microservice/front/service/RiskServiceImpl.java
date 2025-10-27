@@ -16,12 +16,12 @@ public class RiskServiceImpl implements RiskService{
     }
 
     @Override
-    public List<PatientDTO> getPatientsWithRisk() {
-        return gatewayClientInterface.getAllPatientsWithRisk();
+    public List<PatientDTO> getPatientsWithRisk(List<PatientDTO> patients) {
+    return gatewayClientInterface.getAllPatientsWithRisk(patients);
     }
 
     @Override
-    public PatientDTO getPatientWithRiskById(Long id) {
-        return gatewayClientInterface.getPatientWithRiskById(id);
+    public PatientDTO getPatientWithRisk(PatientDTO patient) {
+        return gatewayClientInterface.getPatientWithRiskById(patient);
     }
 }
