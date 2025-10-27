@@ -1,7 +1,6 @@
 package com.microservice.risk.service;
 
 import com.microservice.risk.client.NoteClient;
-import com.microservice.risk.client.PatientClient;
 import com.project.common.dto.NoteResponseDTO;
 import com.project.common.dto.PatientDTO;
 import com.project.common.model.Gender;
@@ -13,20 +12,18 @@ import org.mockito.Mockito;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 class RiskCalculatorServiceTest {
 
-    private PatientClient patientClient;
     private NoteClient noteClient;
     private RiskCalculatorService riskCalculatorService;
 
     @BeforeEach
     void setUp() {
-        patientClient = Mockito.mock(PatientClient.class);
         noteClient = Mockito.mock(NoteClient.class);
-        riskCalculatorService = new RiskCalculatorServiceImpl(patientClient, noteClient);
+        riskCalculatorService = new RiskCalculatorServiceImpl(noteClient);
     }
 
     // --------------------------------------------------------
@@ -47,10 +44,9 @@ class RiskCalculatorServiceTest {
                         LocalDate.of(2023, 1, 1))
         );
 
-        when(patientClient.getPatientById(1L)).thenReturn(patient);
-        when(noteClient.getNoteAndDateByPatientId(1L)).thenReturn(notes);
+        when(noteClient.getNoteAndDateByPatientId(patient.getId())).thenReturn(notes);
 
-        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(1L);
+        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(patient);
 
         assertEquals(LevelRiskOfDiabetes.None, result.getRiskOfDiabetes());
     }
@@ -76,10 +72,9 @@ class RiskCalculatorServiceTest {
                         LocalDate.of(2023, 2, 1))
         );
 
-        when(patientClient.getPatientById(2L)).thenReturn(patient);
-        when(noteClient.getNoteAndDateByPatientId(2L)).thenReturn(notes);
+        when(noteClient.getNoteAndDateByPatientId(patient.getId())).thenReturn(notes);
 
-        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(2L);
+        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(patient);
 
         assertEquals(LevelRiskOfDiabetes.Borderline, result.getRiskOfDiabetes());
     }
@@ -105,10 +100,9 @@ class RiskCalculatorServiceTest {
                         LocalDate.of(2023, 2, 1))
         );
 
-        when(patientClient.getPatientById(3L)).thenReturn(patient);
-        when(noteClient.getNoteAndDateByPatientId(3L)).thenReturn(notes);
+        when(noteClient.getNoteAndDateByPatientId(patient.getId())).thenReturn(notes);
 
-        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(3L);
+        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(patient);
 
         assertEquals(LevelRiskOfDiabetes.InDanger, result.getRiskOfDiabetes());
     }
@@ -140,10 +134,9 @@ class RiskCalculatorServiceTest {
                         LocalDate.of(2023, 4, 1))
         );
 
-        when(patientClient.getPatientById(4L)).thenReturn(patient);
-        when(noteClient.getNoteAndDateByPatientId(4L)).thenReturn(notes);
+        when(noteClient.getNoteAndDateByPatientId(patient.getId())).thenReturn(notes);
 
-        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(4L);
+        PatientDTO result = riskCalculatorService.calculateDiabeteForOnePatient(patient);
 
         assertEquals(LevelRiskOfDiabetes.EarlyOnSet, result.getRiskOfDiabetes());
     }

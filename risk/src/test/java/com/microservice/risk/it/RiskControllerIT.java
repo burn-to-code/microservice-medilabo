@@ -1,11 +1,7 @@
 package com.microservice.risk.it;
 
 import com.microservice.risk.client.NoteClient;
-import com.microservice.risk.client.PatientClient;
 import com.project.common.dto.NoteResponseDTO;
-import com.project.common.dto.PatientDTO;
-import com.project.common.model.Gender;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -27,30 +23,13 @@ class RiskControllerIT {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
-    private PatientClient patientClient;
 
     @MockitoBean
     private NoteClient noteClient;
 
-    private PatientDTO patientNone, patientBorderline, patientInDanger, patientEarlyOnset;
-
-    @BeforeEach
-    void setUp() {
-        patientNone = new PatientDTO(1L, "Test", "TestNone", LocalDate.of(1966, 12, 31), Gender.F, "1 Brookside St", "100-222-3333");
-        patientBorderline = new PatientDTO(2L, "Test", "TestBorderline", LocalDate.of(1945, 6, 24), Gender.M, "2 High St", "200-333-4444");
-        patientInDanger = new PatientDTO(3L, "Test", "TestInDanger", LocalDate.of(2004, 6, 18), Gender.M, "3 Club Road", "300-444-5555");
-        patientEarlyOnset = new PatientDTO(4L, "Test", "TestEarlyOnset", LocalDate.of(2002, 6, 28), Gender.F, "4 Valley Dr", "400-555-6666");
-
-    }
-
     @Test
     void getAllPatients_ShouldCalculateRisk() throws Exception {
-        List<PatientDTO> allPatients = List.of(patientNone, patientBorderline, patientInDanger, patientEarlyOnset);
 
-        when(patientClient.getAllPatients()).thenReturn(allPatients);
-
-        // mock des notes par patient
         when(noteClient.getNoteAndDateByPatientId(1L)).thenReturn(
                 List.of(new NoteResponseDTO("Le patient se sent très bien. Poids égal ou inférieur au poids recommandé", LocalDate.now()))
         );
@@ -75,7 +54,18 @@ class RiskControllerIT {
                 )
         );
 
-        mockMvc.perform(get("/risk/all"))
+        String patientsJson = """
+                [
+                    {"id":1,"firstName":"Test","lastName":"TestNone","dateOfBirth":"31/12/1966","gender":"F","address":"1 Brookside St","phoneNumber":"100-222-3333"},
+                    {"id":2,"firstName":"Test","lastName":"TestBorderline","dateOfBirth":"24/06/1945","gender":"M","address":"2 High St","phoneNumber":"200-333-4444"},
+                    {"id":3,"firstName":"Test","lastName":"TestInDanger","dateOfBirth":"18/06/2004","gender":"M","address":"3 Club Road","phoneNumber":"300-444-5555"},
+                    {"id":4,"firstName":"Test","lastName":"TestEarlyOnset","dateOfBirth":"28/06/2002","gender":"F","address":"4 Valley Dr","phoneNumber":"400-555-6666"}
+                ]
+                """;
+
+        mockMvc.perform(post("/risk/all")
+                        .contentType("application/json")
+                        .content(patientsJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(4))
                 .andExpect(jsonPath("$[0].riskOfDiabetes").value("None"))
