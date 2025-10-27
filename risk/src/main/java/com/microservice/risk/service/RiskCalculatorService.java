@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface RiskCalculatorService {
 
-    List<PatientDTO> calculateDiabeteForAllPatient();
-    PatientDTO calculateDiabeteForOnePatient(Long id);
+    List<PatientDTO> calculateDiabeteForAllPatient(List<PatientDTO> patientList);
+
+    PatientDTO calculateDiabeteForOnePatient(PatientDTO patient);
 }

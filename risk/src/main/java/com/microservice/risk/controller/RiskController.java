@@ -4,10 +4,7 @@ import com.microservice.risk.service.RiskCalculatorService;
 import com.project.common.dto.PatientDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,17 +19,16 @@ public class RiskController {
         this.riskCalculatorService = riskCalculatorService;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PatientDTO>> getAllPatients(){
+    @PostMapping("/all")
+    public ResponseEntity<List<PatientDTO>> getAllPatients(@RequestBody List<PatientDTO> patientList) {
         log.info("Requête reçu pour obtenir les patients");
-        List<PatientDTO> patients =  riskCalculatorService.calculateDiabeteForAllPatient();
+        List<PatientDTO> patients =  riskCalculatorService.calculateDiabeteForAllPatient(patientList);
         return ResponseEntity.ok(patients);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PatientDTO> getPatientById(@PathVariable Long id){
-        log.info("requête reçu pour obtenir le patient avec l'id {}", id);
-        PatientDTO patient = riskCalculatorService.calculateDiabeteForOnePatient(id);
+    @PostMapping()
+    public ResponseEntity<PatientDTO> getPatient(@RequestBody PatientDTO patientWithNotRisk){
+        PatientDTO patient = riskCalculatorService.calculateDiabeteForOnePatient(patientWithNotRisk);
 
         if(patient == null || patient.getId() == null) return ResponseEntity.notFound().build();
 

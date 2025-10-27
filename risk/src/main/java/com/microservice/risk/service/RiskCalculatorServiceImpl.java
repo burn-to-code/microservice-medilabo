@@ -1,7 +1,6 @@
 package com.microservice.risk.service;
 
 import com.microservice.risk.client.NoteClient;
-import com.microservice.risk.client.PatientClient;
 import com.microservice.risk.model.WordsFactorDiabetes;
 import com.project.common.dto.NoteResponseDTO;
 import com.project.common.dto.PatientDTO;
@@ -20,12 +19,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class RiskCalculatorServiceImpl implements RiskCalculatorService {
-
-    private final PatientClient patientClient;
     private final NoteClient noteClient;
 
-    public RiskCalculatorServiceImpl(PatientClient patientClient, NoteClient noteClient) {
-        this.patientClient = patientClient;
+    public RiskCalculatorServiceImpl(NoteClient noteClient) {
         this.noteClient = noteClient;
     }
 
@@ -34,7 +30,6 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
      * <p>
      * Pour chaque patient de la liste, la méthode :
      * <ul>
-     *      <li>Récupère tous les patient via le service {@link PatientClient}</li>
      *     <li>Récupère ses notes via le service {@link NoteClient}</li>
      *     <li>Calcule son âge à partir de sa date de naissance</li>
      *     <li>Compte le nombre de déclencheurs présents dans ses notes</li>
@@ -48,17 +43,7 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
      * @return la liste des patients avec le champ {@code riskOfDiabetes} mis à jour
      */
     @Override
-    public List<PatientDTO> calculateDiabeteForAllPatient() {
-        List<PatientDTO> patientList;
-        try {
-            patientList = patientClient.getAllPatients();
-        } catch (FeignException e){
-            log.error("Impossible de récupérer la liste des patients : {}", e.getMessage(), e);
-            PatientDTO placeholder = new PatientDTO(null, "Indisponible", "Indisponible", null, Gender.UNDEFINED, null, null);
-            placeholder.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
-            return List.of(placeholder);
-        }
-
+    public List<PatientDTO> calculateDiabeteForAllPatient(List<PatientDTO> patientList) {
         log.info("Calcul du risque de diabète pour {} patients", patientList.size());
 
         if (patientList.isEmpty()) {
@@ -75,7 +60,6 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
      * <p>
      * La méthode :
      * <ul>
-     *     <li>Récupère le patient via {@link PatientClient}</li>
      *     <li>Récupère ses notes via {@link NoteClient}</li>
      *     <li>Calcule l'âge et le score des déclencheurs dans les notes</li>
      *     <li>Détermine le niveau de risque selon l'âge, le sexe et le score</li>
@@ -86,47 +70,15 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
      * {@link PatientDTO} de fallback est retourné avec le champ {@code riskOfDiabetes} à
      * {@link LevelRiskOfDiabetes#DonneesInsuffisantes}.
      *
-     * @param patientId l'identifiant du patient pour lequel calculer le risque
+     * @param patient l'objet du patient sans son risque pour lequel calculer le risque
      * @return le patient avec le champ {@code riskOfDiabetes} mis à jour, ou un fallback si erreur
      */
     @Override
-    public PatientDTO calculateDiabeteForOnePatient(Long patientId) {
-        Assert.notNull(patientId, "patientId must not be null");
-        log.debug("Calcul du risque de diabète pour le patient ID={}", patientId);
-        return tryAndCatchCalculateDiabetesWithPatientId(patientId);
-
-    }
-
-    private PatientDTO tryAndCatchCalculateDiabetesWithPatientId(Long patientId) {
-        try {
-            PatientDTO patient = patientClient.getPatientById(patientId);
-            List<NoteResponseDTO> notes = noteClient.getNoteAndDateByPatientId(patientId);
-
-            if (patient == null) {
-                log.warn("Patient ID={} introuvable", patientId);
-                return new PatientDTO();
-            }
-
-            if (notes.isEmpty() ) {
-                log.warn("Aucune note trouvée pour le patient ID={}", patient.getId());
-                patient.setRiskOfDiabetes(LevelRiskOfDiabetes.None);
-                return patient;
-            }
-
-            int age = calculateAgeForOnePatient(patient.getDateOfBirth());
-            int score = countWordFactorsInNotes(notes);
-
-            LevelRiskOfDiabetes result = levelOfRisk(age, score, patient.getGender());
-            patient.setRiskOfDiabetes(result);
-            log.info("Patient ID={} : âge={}, score={}, risque={}", patientId, age, score, result);
-            return patient;
-        } catch (FeignException e) {
-            log.error("Erreur Feign lors de l'appel d'un service externe pour le patient ID={}", patientId, e);
-            return createFallBackPatientDTO(patientId);
-        } catch (Exception e) {
-            log.error("Échec du calcul du risque pour le patient ID={}: {}", patientId, e.getMessage());
-            return createFallBackPatientDTO(patientId);
-        }
+    public PatientDTO calculateDiabeteForOnePatient(PatientDTO patient) {
+        Assert.notNull(patient, "patientId must not be null");
+        log.debug("Calcul du risque de diabète pour le patient : {}", patient.getFirstName());
+        tryAndCatchCalculateDiabetesWithPatientDTO(patient);
+        return patient;
     }
 
     private void tryAndCatchCalculateDiabetesWithPatientDTO(PatientDTO p) {
@@ -153,20 +105,6 @@ public class RiskCalculatorServiceImpl implements RiskCalculatorService {
         } catch (Exception e) {
             log.error("Erreur lors du calcul du risque pour le patient ID={}: {}", p.getId(), e.getMessage());
             p.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
-        }
-    }
-
-    // Pour fallback
-    private PatientDTO createFallBackPatientDTO(Long patientId){
-        try {
-            PatientDTO fallback = patientClient.getPatientById(patientId);
-            fallback.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
-            return fallback;
-        } catch (FeignException e) {
-            log.error("Erreur Feign lors de l'appel d'un service externe pour le patient ID={}", patientId, e);
-            PatientDTO fallback = new PatientDTO(patientId, "Inconnu", "Inconnu", null, Gender.UNDEFINED, null, null);
-            fallback.setRiskOfDiabetes(LevelRiskOfDiabetes.DonneesInsuffisantes);
-            return fallback;
         }
     }
 
