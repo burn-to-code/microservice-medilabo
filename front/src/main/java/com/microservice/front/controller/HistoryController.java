@@ -23,10 +23,10 @@ public class HistoryController {
     private final RiskService riskService;
     private final PatientService patientService;
 
-    public HistoryController(NoteService noteService, RiskService riskService, PatientService patientService, PatientService patientService1) {
+    public HistoryController(NoteService noteService, RiskService riskService, PatientService patientService) {
         this.noteService = noteService;
         this.riskService = riskService;
-        this.patientService = patientService1;
+        this.patientService = patientService;
     }
 
     @GetMapping("/{id}")
