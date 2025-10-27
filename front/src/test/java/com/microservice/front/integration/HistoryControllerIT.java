@@ -1,6 +1,7 @@
 package com.microservice.front.integration;
 
 import com.microservice.front.service.NoteService;
+import com.microservice.front.service.PatientService;
 import com.microservice.front.service.RiskService;
 import com.project.common.dto.PatientDTO;
 import com.project.common.model.Gender;
@@ -36,6 +37,9 @@ class HistoryControllerIT {
 
     private PatientDTO patient;
 
+    @MockitoBean
+    private PatientService patientService;
+
     @BeforeEach
     void setup() {
         patient = new PatientDTO(
@@ -52,7 +56,8 @@ class HistoryControllerIT {
 
     @Test
     void listHistoryWithPatientId_shouldReturnHistoryView() throws Exception {
-        Mockito.when(riskService.getPatientWithRiskById(1L)).thenReturn(patient);
+        Mockito.when(patientService.getPatientById(1L)).thenReturn(patient);
+        Mockito.when(riskService.getPatientWithRisk(patient)).thenReturn(patient);
         Mockito.when(noteService.getNoteAndDateByPatientId(1L)).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/history/1"))

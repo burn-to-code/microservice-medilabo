@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -54,7 +55,11 @@ class PatientControllerTest {
 
     @Test
     void listPatient_shouldReturnViewWithPatients() throws Exception {
-        when(riskService.getPatientsWithRisk()).thenReturn(Collections.singletonList(validPatient));
+
+        List<PatientDTO> patients = Collections.singletonList(validPatient);
+
+        when(patientService.getAllPatients()).thenReturn(patients);
+        when(riskService.getPatientsWithRisk(patients)).thenReturn(Collections.singletonList(validPatient));
 
         mockMvc.perform(get("/patient"))
                 .andExpect(status().isOk())

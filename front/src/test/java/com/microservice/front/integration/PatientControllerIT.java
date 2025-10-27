@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -56,12 +57,18 @@ class PatientControllerIT {
 
     @Test
     void listPatient_shouldReturnViewWithPatients() throws Exception {
-        Mockito.when(riskService.getPatientsWithRisk()).thenReturn(Collections.singletonList(validPatient));
+
+        List<PatientDTO> patientList = List.of(validPatient);
+
+        Mockito.when(patientService.getAllPatients()).thenReturn(patientList);
+
+        Mockito.when(riskService.getPatientsWithRisk(patientList)).thenReturn(Collections.singletonList(validPatient));
 
         mockMvc.perform(get("/patient"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("patient/list"))
-                .andExpect(model().attributeExists("patients"));
+                .andExpect(model().attributeExists("patients"))
+                .andExpect(model().attribute("patients", patientList));
     }
 
     @Test
